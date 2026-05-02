@@ -1,0 +1,41 @@
+appId: com.agentflow.manager
+productName: Agent Flow Manager
+directories:
+  buildResources: build
+  output: release/${version}
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintrc.cjs,.prettierrc,.prettierignore,.editorconfig}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!{tests,docs}'
+  - '!*.{md,log}'
+asarUnpack:
+  - resources/**
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.developer-tools
+  artifactName: ${productName}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - deb
+  maintainer: agent-flow-manager
+  category: Development
+  artifactName: ${productName}-${version}.${ext}
