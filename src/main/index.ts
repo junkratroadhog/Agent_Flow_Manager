@@ -1,56 +1,44 @@
-import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { app, BrowserWindow } from 'electron'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { createMainWindow, focusMainWindow } from './window'
+import { registerWindowHandlers, attachWindowStateEvents } from './ipcHandlers'
 
-function createWindow(): void {
-  const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    minWidth: 1024,
-    minHeight: 768,
-    show: false,
-    autoHideMenuBar: true,
-    title: 'Agent Flow Manager',
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: true,
-      contextIsolation: true,
-      nodeIntegration: false
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    focusMainWindow()
+  })
+
+  app.whenReady().then(() => {
+    electronApp.setAppUserModelId('com.agentflow.manager')
+
+    app.on('browser-window-created', (_, window) => {
+      optimizer.watchWindowShortcuts(window)
+    })
+
+    registerWindowHandlers()
+
+    const mainWindow = createMainWindow()
+    attachWindowStateEvents(mainWindow)
+
+    app.on('activate', function () {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        const newWindow = createMainWindow()
+        attachWindowStateEvents(newWindow)
+      }
+    })
+  })
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+  app.on('before-quit', () => {
+    // Cleanup hook for future chapters (DB close, etc.)
   })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
 }
-
-app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.agentflow.manager')
-
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
-  })
-
-  createWindow()
-
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})

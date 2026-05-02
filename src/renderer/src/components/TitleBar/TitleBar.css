@@ -1,0 +1,84 @@
+.title-bar {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #1f1f1f;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1000;
+}
+
+.title-bar--mac {
+  padding-left: 80px;
+}
+
+.title-bar__drag-region {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  -webkit-app-region: drag;
+  padding: 0 12px;
+}
+
+.title-bar__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.title-bar__app-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d1d5db;
+  letter-spacing: 0.2px;
+}
+
+.title-bar__controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.title-bar__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition:
+    background-color 0.1s ease,
+    color 0.1s ease;
+  outline: none;
+  padding: 0;
+}
+
+.title-bar__button:hover {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+.title-bar__button:active {
+  background-color: #262626;
+}
+
+.title-bar__button--close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+}
+
+.title-bar__button--close:active {
+  background-color: #c50f1f;
+}
+
+.title-bar__button:focus-visible {
+  outline: 1px solid #3b82f6;
+  outline-offset: -2px;
+}
