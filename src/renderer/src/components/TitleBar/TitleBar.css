@@ -8,6 +8,8 @@
   flex-shrink: 0;
   position: relative;
   z-index: 1000;
+  /* Disable drag on the entire bar by default */
+  -webkit-app-region: no-drag;
 }
 
 .title-bar--mac {
@@ -41,6 +43,7 @@
   display: flex;
   height: 100%;
   -webkit-app-region: no-drag;
+  flex-shrink: 0;
 }
 
 .title-bar__button {
@@ -58,6 +61,11 @@
     color 0.1s ease;
   outline: none;
   padding: 0;
+  /* Explicitly allow clicks on buttons */
+  pointer-events: all;
+  -webkit-app-region: no-drag;
+  position: relative;
+  z-index: 1001;
 }
 
 .title-bar__button:hover {
@@ -81,4 +89,8 @@
 .title-bar__button:focus-visible {
   outline: 1px solid #3b82f6;
   outline-offset: -2px;
+}
+
+.title-bar__button svg {
+  pointer-events: none;
 }

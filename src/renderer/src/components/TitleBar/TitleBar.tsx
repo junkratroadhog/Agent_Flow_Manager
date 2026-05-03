@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Minus, Square, Copy, X } from 'lucide-react'
-import './TitleBar.css'
+import { cn } from '../../lib/utils'
 
 interface TitleBarProps {
   title?: string
@@ -16,74 +16,58 @@ function TitleBar({ title = 'Agent Flow Manager' }: TitleBarProps): JSX.Element 
         const detectedPlatform = await window.platform.get()
         setPlatform(detectedPlatform)
       }
-
       if (window.windowControls) {
         const initialState = await window.windowControls.isMaximized()
         setIsMaximized(initialState)
       }
     }
-
     init()
-
     if (window.windowControls) {
-      const unsubscribe = window.windowControls.onMaximizedChange((maximized) => {
-        setIsMaximized(maximized)
-      })
-      return unsubscribe
+      window.windowControls.onMaximizedChange(setIsMaximized)
     }
-
     return undefined
   }, [])
-
-  const handleMinimize = (): void => {
-    window.windowControls?.minimize()
-  }
-
-  const handleMaximize = (): void => {
-    window.windowControls?.maximize()
-  }
-
-  const handleClose = (): void => {
-    window.windowControls?.close()
-  }
-
-  const handleDoubleClick = (): void => {
-    handleMaximize()
-  }
 
   const isMac = platform === 'darwin'
 
   return (
-    <div className={`title-bar ${isMac ? 'title-bar--mac' : 'title-bar--win'}`}>
-      <div className="title-bar__drag-region" onDoubleClick={handleDoubleClick}>
-        <div className="title-bar__title">
-          <span className="title-bar__app-name">{title}</span>
-        </div>
+    <div
+      className={cn(
+        'flex items-center h-9 bg-bg-deepest border-b border-border-subtle select-none flex-shrink-0',
+        isMac && 'pl-20'
+      )}
+      style={{ zIndex: 1000 }}
+    >
+      <div
+        className="flex-1 h-full flex items-center px-3"
+        style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+        onDoubleClick={() => window.windowControls?.maximize()}
+      >
+        <span className="text-xs font-medium text-text-secondary tracking-wide pointer-events-none">
+          {title}
+        </span>
       </div>
 
       {!isMac && (
-        <div className="title-bar__controls">
+        <div className="flex h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
           <button
-            className="title-bar__button title-bar__button--minimize"
-            onClick={handleMinimize}
+            onClick={() => window.windowControls?.minimize()}
+            className="flex items-center justify-center w-[46px] h-full text-text-tertiary hover:bg-bg-elevated hover:text-text-primary transition-colors"
             aria-label="Minimize"
-            title="Minimize"
           >
             <Minus size={14} />
           </button>
           <button
-            className="title-bar__button title-bar__button--maximize"
-            onClick={handleMaximize}
+            onClick={() => window.windowControls?.maximize()}
+            className="flex items-center justify-center w-[46px] h-full text-text-tertiary hover:bg-bg-elevated hover:text-text-primary transition-colors"
             aria-label={isMaximized ? 'Restore' : 'Maximize'}
-            title={isMaximized ? 'Restore' : 'Maximize'}
           >
             {isMaximized ? <Copy size={12} /> : <Square size={12} />}
           </button>
           <button
-            className="title-bar__button title-bar__button--close"
-            onClick={handleClose}
+            onClick={() => window.windowControls?.close()}
+            className="flex items-center justify-center w-[46px] h-full text-text-tertiary hover:bg-status-error hover:text-white transition-colors"
             aria-label="Close"
-            title="Close"
           >
             <X size={16} />
           </button>
