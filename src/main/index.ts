@@ -22,13 +22,18 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     electronApp.setAppUserModelId('com.agentflow.manager')
 
+    // Register core handlers that don't depend on DB
+    registerWindowHandlers()
+    registerAppHandlers()
+
     // Initialize database & repos
     try {
       const db = initDatabase()
       runMigrations(db)
-      repos = createRepositories(db)
+      const repositories = createRepositories(db)
+      repos = repositories
       const secretStorage = new SecretStorage(db)
-      registerAllIpcHandlers(repos, secretStorage)
+      registerAllIpcHandlers(repositories, secretStorage)
       console.info('Database and IPC handlers initialized')
     } catch (error) {
       console.error('Failed to initialize:', error)
@@ -37,8 +42,6 @@ if (!gotTheLock) {
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
     })
-
-    registerWindowHandlers()
 
     const mainWindow = createMainWindow()
     attachWindowStateEvents(mainWindow)

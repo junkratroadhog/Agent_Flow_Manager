@@ -23,13 +23,8 @@ const ResizableHandle = ({
 }): JSX.Element => (
   <Separator
     className={cn(
-      'relative flex w-px items-center justify-center bg-border-subtle',
-      'after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2',
-      'hover:bg-accent transition-colors',
-      'data-[panel-group-orientation=vertical]:h-px data-[panel-group-orientation=vertical]:w-full',
-      'data-[panel-group-orientation=vertical]:after:left-0 data-[panel-group-orientation=vertical]:after:h-1',
-      'data-[panel-group-orientation=vertical]:after:w-full data-[panel-group-orientation=vertical]:after:-translate-y-1/2',
-      'data-[panel-group-orientation=vertical]:after:translate-x-0',
+      'relative flex w-1 items-center justify-center bg-border-strong hover:bg-accent transition-all',
+      'data-[panel-group-orientation=vertical]:h-1 data-[panel-group-orientation=vertical]:w-full',
       className
     )}
     {...props}

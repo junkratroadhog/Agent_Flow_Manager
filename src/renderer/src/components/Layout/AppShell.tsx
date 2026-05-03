@@ -50,7 +50,10 @@ export default function AppShell(): JSX.Element {
       <div className="flex flex-col h-full w-full overflow-hidden bg-bg-deepest">
         <div className="flex flex-1 w-full overflow-hidden">
           <ActivityBar />
-          <ResizablePanelGroup orientation="horizontal" className="flex-1 h-full w-full">
+          <ResizablePanelGroup
+            orientation="horizontal"
+            className="flex-1 h-full w-full overflow-hidden"
+          >
             {leftSidebarVisible && (
               <>
                 <ResizablePanel
@@ -58,18 +61,30 @@ export default function AppShell(): JSX.Element {
                   minSize={10}
                   maxSize={40}
                   onResize={(size) => {
-                    const px = Math.round((size / 100) * window.innerWidth)
+                    const px = Math.round((size / 100) * (window.innerWidth || 1200))
                     if (px > 0) setLeftSidebarWidth(px)
                   }}
+                  className="h-full overflow-hidden"
                 >
                   <LeftSidebar />
                 </ResizablePanel>
                 <ResizableHandle />
               </>
             )}
-            <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col">
-              <ResizablePanelGroup orientation="vertical" className="flex-1 h-full w-full">
-                <ResizablePanel defaultSize={bottomPanelVisible ? 70 : 100} minSize={30}>
+            <ResizablePanel
+              defaultSize={60}
+              minSize={20}
+              className="flex flex-col h-full overflow-hidden"
+            >
+              <ResizablePanelGroup
+                orientation="vertical"
+                className="flex-1 h-full w-full overflow-hidden"
+              >
+                <ResizablePanel
+                  defaultSize={bottomPanelVisible ? 70 : 100}
+                  minSize={20}
+                  className="h-full overflow-hidden"
+                >
                   <MainContent />
                 </ResizablePanel>
                 {bottomPanelVisible && (
@@ -78,11 +93,12 @@ export default function AppShell(): JSX.Element {
                     <ResizablePanel
                       defaultSize={bottomPanelDefaultSize}
                       minSize={10}
-                      maxSize={70}
+                      maxSize={80}
                       onResize={(size) => {
-                        const px = Math.round((size / 100) * window.innerHeight)
+                        const px = Math.round((size / 100) * (window.innerHeight || 800))
                         if (px > 0) setBottomPanelHeight(px)
                       }}
+                      className="h-full overflow-hidden"
                     >
                       <BottomPanel />
                     </ResizablePanel>
@@ -98,9 +114,10 @@ export default function AppShell(): JSX.Element {
                   minSize={10}
                   maxSize={40}
                   onResize={(size) => {
-                    const px = Math.round((size / 100) * window.innerWidth)
+                    const px = Math.round((size / 100) * (window.innerWidth || 1200))
                     if (px > 0) setRightSidebarWidth(px)
                   }}
+                  className="h-full overflow-hidden"
                 >
                   <RightSidebar />
                 </ResizablePanel>

@@ -15,5 +15,4 @@ export function registerAllIpcHandlers(repos: Repositories, secretStorage: Secre
   registerAgentHandlers(repos)
   registerSettingsHandlers(repos)
   registerApiKeyHandlers(secretStorage)
-  registerAppHandlers()
 }
