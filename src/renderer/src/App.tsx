@@ -12,9 +12,9 @@ function App(): JSX.Element {
   return (
     <div className="app-container">
       <TitleBar title={appName} />
-      <div className="flex-1 overflow-hidden">
+      <main className="flex-1 w-full overflow-hidden flex flex-col">
         <AppShell />
-      </div>
+      </main>
     </div>
   )
 }

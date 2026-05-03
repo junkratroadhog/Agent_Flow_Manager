@@ -104,6 +104,6 @@
 
 @layer components {
   .app-container {
-    @apply flex flex-col h-screen w-screen bg-bg-deepest;
+    @apply flex flex-col h-full w-full bg-bg-deepest;
   }
 }
