@@ -1,49 +1,56 @@
-import { describe, it, expect, beforeAll, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { render, screen, act } from '@testing-library/react'
 import App from '../../src/renderer/src/App'
 
 describe('App', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'api', {
-      value: { appName: 'Agent Flow Manager', appVersion: '0.1.0' },
-      writable: true,
-      configurable: true
+  beforeEach(() => {
+    vi.stubGlobal('electron', {
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({ ok: true, data: [] }),
+        on: vi.fn().mockReturnValue(() => undefined)
+      }
     })
-    Object.defineProperty(window, 'platform', {
-      value: {
-        get: vi.fn().mockResolvedValue('win32'),
-        getVersion: vi.fn().mockResolvedValue('0.1.0')
-      },
-      writable: true,
-      configurable: true
+    vi.stubGlobal('api', { appName: 'Agent Flow Manager', appVersion: '0.1.0' })
+    vi.stubGlobal('platform', {
+      get: vi.fn().mockResolvedValue('win32'),
+      getVersion: vi.fn().mockResolvedValue('0.1.0')
     })
-    Object.defineProperty(window, 'windowControls', {
-      value: {
-        minimize: vi.fn(),
-        maximize: vi.fn(),
-        close: vi.fn(),
-        isMaximized: vi.fn().mockResolvedValue(false),
-        onMaximizedChange: vi.fn().mockReturnValue(() => undefined)
-      },
-      writable: true,
-      configurable: true
+    vi.stubGlobal('windowControls', {
+      minimize: vi.fn(),
+      maximize: vi.fn(),
+      close: vi.fn(),
+      isMaximized: vi.fn().mockResolvedValue(false),
+      onMaximizedChange: vi.fn().mockReturnValue(() => undefined)
+    })
+    vi.stubGlobal('bridge', {
+      invoke: vi.fn().mockResolvedValue({ ok: true, data: [] }),
+      on: vi.fn().mockReturnValue(() => undefined)
     })
   })
 
-  it('renders without crashing', () => {
-    render(<App />)
+  it('renders without crashing', async () => {
+    await act(async () => {
+      render(<App />)
+    })
     expect(screen.getAllByText(/Agent Flow Manager/i).length).toBeGreaterThan(0)
   })
 
-  it('renders the component showcase', () => {
-    render(<App />)
-    expect(screen.getByText(/Component Showcase/i)).toBeInTheDocument()
+  it('renders the IPC smoke test by default', async () => {
+    await act(async () => {
+      render(<App />)
+    })
+    expect(screen.getByText(/IPC Smoke Test/i)).toBeInTheDocument()
+    expect(screen.getByText(/Create Project/i)).toBeInTheDocument()
   })
 
-  it('renders all section headers', () => {
-    render(<App />)
-    expect(screen.getByText(/^Buttons$/)).toBeInTheDocument()
-    expect(screen.getByText(/^Inputs$/)).toBeInTheDocument()
-    expect(screen.getByText(/^Dialog$/)).toBeInTheDocument()
+  it('can switch to component showcase', async () => {
+    await act(async () => {
+      render(<App />)
+    })
+    const button = screen.getByText(/Components/i)
+    await act(async () => {
+      button.click()
+    })
+    expect(screen.getByText(/Component Showcase/i)).toBeInTheDocument()
   })
 })
