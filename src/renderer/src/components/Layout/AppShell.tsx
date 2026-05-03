@@ -38,25 +38,28 @@ export default function AppShell(): JSX.Element {
     return () => window.removeEventListener('keydown', handler)
   }, [toggleLeftSidebar, toggleBottomPanel])
 
-  const leftSidebarDefaultSize = (leftSidebarWidth / (window.innerWidth || 1)) * 100
-  const bottomPanelDefaultSize = (bottomPanelHeight / (window.innerHeight || 1)) * 100
-  const rightSidebarDefaultSize = (rightSidebarWidth / (window.innerWidth || 1)) * 100
+  const leftSidebarDefaultSize =
+    leftSidebarWidth > 0 ? (leftSidebarWidth / (window.innerWidth || 1200)) * 100 : 20
+  const bottomPanelDefaultSize =
+    bottomPanelHeight > 0 ? (bottomPanelHeight / (window.innerHeight || 800)) * 100 : 25
+  const rightSidebarDefaultSize =
+    rightSidebarWidth > 0 ? (rightSidebarWidth / (window.innerWidth || 1200)) * 100 : 25
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col h-full w-full overflow-hidden bg-bg-deepest">
+        <div className="flex flex-1 w-full overflow-hidden">
           <ActivityBar />
-          <ResizablePanelGroup orientation="horizontal" className="flex-1">
+          <ResizablePanelGroup orientation="horizontal" className="flex-1 h-full w-full">
             {leftSidebarVisible && (
               <>
                 <ResizablePanel
                   defaultSize={leftSidebarDefaultSize}
-                  minSize={12}
+                  minSize={10}
                   maxSize={40}
                   onResize={(size) => {
                     const px = Math.round((size / 100) * window.innerWidth)
-                    setLeftSidebarWidth(px)
+                    if (px > 0) setLeftSidebarWidth(px)
                   }}
                 >
                   <LeftSidebar />
@@ -64,8 +67,8 @@ export default function AppShell(): JSX.Element {
                 <ResizableHandle />
               </>
             )}
-            <ResizablePanel defaultSize={60} minSize={30}>
-              <ResizablePanelGroup orientation="vertical">
+            <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col">
+              <ResizablePanelGroup orientation="vertical" className="flex-1 h-full w-full">
                 <ResizablePanel defaultSize={bottomPanelVisible ? 70 : 100} minSize={30}>
                   <MainContent />
                 </ResizablePanel>
@@ -78,7 +81,7 @@ export default function AppShell(): JSX.Element {
                       maxSize={70}
                       onResize={(size) => {
                         const px = Math.round((size / 100) * window.innerHeight)
-                        setBottomPanelHeight(px)
+                        if (px > 0) setBottomPanelHeight(px)
                       }}
                     >
                       <BottomPanel />
@@ -92,11 +95,11 @@ export default function AppShell(): JSX.Element {
                 <ResizableHandle />
                 <ResizablePanel
                   defaultSize={rightSidebarDefaultSize}
-                  minSize={15}
+                  minSize={10}
                   maxSize={40}
                   onResize={(size) => {
                     const px = Math.round((size / 100) * window.innerWidth)
-                    setRightSidebarWidth(px)
+                    if (px > 0) setRightSidebarWidth(px)
                   }}
                 >
                   <RightSidebar />
