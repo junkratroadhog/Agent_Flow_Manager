@@ -1,15 +1,17 @@
 import { ipcMain, BrowserWindow } from 'electron'
+import { getMainWindow } from './window'
+import { IPC, IPC_EVENTS } from '../shared/ipc-channels'
 
 export function registerWindowHandlers(): void {
-  ipcMain.handle('window:minimize', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender)
+  ipcMain.handle(IPC.WINDOW_MINIMIZE, () => {
+    const window = getMainWindow()
     if (window) {
       window.minimize()
     }
   })
 
-  ipcMain.handle('window:maximize', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender)
+  ipcMain.handle(IPC.WINDOW_MAXIMIZE, () => {
+    const window = getMainWindow()
     if (window) {
       if (window.isMaximized()) {
         window.unmaximize()
@@ -19,25 +21,19 @@ export function registerWindowHandlers(): void {
     }
   })
 
-  ipcMain.handle('window:close', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender)
+  ipcMain.handle(IPC.WINDOW_CLOSE, () => {
+    const window = getMainWindow()
     if (window) {
       window.close()
     }
   })
 
-  ipcMain.handle('window:isMaximized', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender)
+  ipcMain.handle(IPC.WINDOW_IS_MAXIMIZED, () => {
+    const window = getMainWindow()
     return window?.isMaximized() ?? false
   })
 
-  ipcMain.handle('app:platform', () => {
-    return process.platform
-  })
-
-  ipcMain.handle('app:version', () => {
-    return process.env['npm_package_version'] || '0.1.0'
-  })
+  // app:platform and app:version are now handled in ipc/appHandlers.ts
 }
 
 /**
@@ -46,10 +42,10 @@ export function registerWindowHandlers(): void {
  */
 export function attachWindowStateEvents(window: BrowserWindow): void {
   window.on('maximize', () => {
-    window.webContents.send('window:maximized', true)
+    window.webContents.send(IPC_EVENTS.WINDOW_MAXIMIZED, true)
   })
 
   window.on('unmaximize', () => {
-    window.webContents.send('window:maximized', false)
+    window.webContents.send(IPC_EVENTS.WINDOW_MAXIMIZED, false)
   })
 }

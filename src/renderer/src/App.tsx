@@ -1,43 +1,39 @@
 import { useState, useEffect } from 'react'
 import TitleBar from './components/TitleBar/TitleBar'
+import ComponentShowcase from './routes/ComponentShowcase'
+import IpcSmokeTest from './routes/IpcSmokeTest'
+import { Button } from './components/ui/Button'
+
+type Route = 'showcase' | 'ipc'
 
 function App(): JSX.Element {
   const [appName, setAppName] = useState<string>('Agent Flow Manager')
-  const [appVersion, setAppVersion] = useState<string>('0.1.0')
-  const [platform, setPlatform] = useState<string>('')
+  const [route, setRoute] = useState<Route>('ipc')
 
   useEffect(() => {
-    if (window.api) {
-      setAppName(window.api.appName)
-      setAppVersion(window.api.appVersion)
-    }
-
-    if (window.platform) {
-      window.platform.get().then((p) => setPlatform(p))
-    }
+    if (window.api) setAppName(window.api.appName)
   }, [])
 
   return (
     <div className="app-container">
       <TitleBar title={appName} />
-      <main className="app-main">
-        <div className="status-card">
-          <h2>✅ Chapter 2 Complete</h2>
-          <p>Application shell and window management working.</p>
-          <ul>
-            <li>✓ Frameless window with custom title bar</li>
-            <li>✓ Window state persists across launches</li>
-            <li>✓ Single-instance enforcement active</li>
-            <li>✓ Window controls (minimize/maximize/close)</li>
-            <li>✓ Platform detected: {platform || 'detecting...'}</li>
-            <li>✓ App version: {appVersion}</li>
-          </ul>
-          <p className="hint">Try: resize window, close and reopen — it remembers.</p>
-        </div>
-      </main>
-      <footer className="app-footer">
-        <p>Ready for Chapter 3</p>
-      </footer>
+      <div className="flex items-center gap-2 px-4 py-2 border-b border-border-subtle bg-bg-deep">
+        <Button
+          variant={route === 'ipc' ? 'primary' : 'ghost'}
+          size="sm"
+          onClick={() => setRoute('ipc')}
+        >
+          IPC Test
+        </Button>
+        <Button
+          variant={route === 'showcase' ? 'primary' : 'ghost'}
+          size="sm"
+          onClick={() => setRoute('showcase')}
+        >
+          Components
+        </Button>
+      </div>
+      {route === 'showcase' ? <ComponentShowcase /> : <IpcSmokeTest />}
     </div>
   )
 }
