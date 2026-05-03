@@ -7,6 +7,7 @@ import { runMigrations } from './db/migrations/runner'
 import { createRepositories } from './db/repositories'
 import { SecretStorage } from './services/SecretStorage'
 import { registerAllIpcHandlers } from './ipc'
+import { registerAppHandlers } from './ipc/appHandlers'
 
 const gotTheLock = app.requestSingleInstanceLock()
 
