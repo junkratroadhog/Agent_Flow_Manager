@@ -60,9 +60,9 @@ export class AgentRepository extends BaseRepository {
   }
 
   updateStatus(id: string, status: AgentStatusType, currentAction?: string): Agent | null {
-    const completedAt =
-      status === 'done' || status === 'failed' ? new Date().toISOString() : null
-    const startedAt = status === 'thinking' || status === 'working' ? new Date().toISOString() : null
+    const completedAt = status === 'done' || status === 'failed' ? new Date().toISOString() : null
+    const startedAt =
+      status === 'thinking' || status === 'working' ? new Date().toISOString() : null
 
     const stmt = this.db.prepare(`
       UPDATE agents SET
@@ -79,9 +79,7 @@ export class AgentRepository extends BaseRepository {
 
   incrementTokens(id: string, tokensUsed: number, cost: number): void {
     this.db
-      .prepare(
-        'UPDATE agents SET tokens_used = tokens_used + ?, cost = cost + ? WHERE id = ?'
-      )
+      .prepare('UPDATE agents SET tokens_used = tokens_used + ?, cost = cost + ? WHERE id = ?')
       .run(tokensUsed, cost, id)
   }
 

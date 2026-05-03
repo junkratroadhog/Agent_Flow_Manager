@@ -64,9 +64,7 @@ export class MessageRepository extends BaseRepository {
   }
 
   deleteBySession(sessionId: string): number {
-    const result = this.db
-      .prepare('DELETE FROM messages WHERE session_id = ?')
-      .run(sessionId)
+    const result = this.db.prepare('DELETE FROM messages WHERE session_id = ?').run(sessionId)
     return result.changes
   }
 }

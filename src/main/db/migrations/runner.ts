@@ -19,9 +19,9 @@ const migrations: Migration[] = [
 
 export function runMigrations(db: Database.Database): void {
   // Get current version
-  const row = db
-    .prepare('SELECT MAX(version) as version FROM _migrations')
-    .get() as { version: number | null }
+  const row = db.prepare('SELECT MAX(version) as version FROM _migrations').get() as {
+    version: number | null
+  }
   const currentVersion = row?.version ?? 0
 
   const pending = migrations.filter((m) => m.version > currentVersion)
@@ -30,9 +30,7 @@ export function runMigrations(db: Database.Database): void {
     return
   }
 
-  const insertMigration = db.prepare(
-    'INSERT INTO _migrations (version, name) VALUES (?, ?)'
-  )
+  const insertMigration = db.prepare('INSERT INTO _migrations (version, name) VALUES (?, ?)')
 
   for (const migration of pending) {
     const transaction = db.transaction(() => {
@@ -44,8 +42,8 @@ export function runMigrations(db: Database.Database): void {
 }
 
 export function getCurrentVersion(db: Database.Database): number {
-  const row = db
-    .prepare('SELECT MAX(version) as version FROM _migrations')
-    .get() as { version: number | null }
+  const row = db.prepare('SELECT MAX(version) as version FROM _migrations').get() as {
+    version: number | null
+  }
   return row?.version ?? 0
 }

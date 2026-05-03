@@ -5,6 +5,7 @@
 > You are implementing Chapter 4 of the Agent Flow Manager project. Follow this document EXACTLY in order.
 >
 > **CRITICAL RULES:**
+>
 > 1. Execute each task in the order given. DO NOT skip ahead.
 > 2. After each task, run the verification command. If it fails, STOP and fix before moving on.
 > 3. Copy file contents EXACTLY as written. Do not "improve" or modify them.
@@ -24,7 +25,7 @@ Build a robust local persistence layer using SQLite (better-sqlite3) that all fe
 ## 📋 What Will Exist When This Chapter Is Done
 
 - SQLite database initialized at OS-appropriate user data path
-- Complete schema with 10 tables (projects, sessions, messages, agents, agent_actions, tool_calls, settings, api_keys, tools, _migrations)
+- Complete schema with 10 tables (projects, sessions, messages, agents, agent_actions, tool_calls, settings, api_keys, tools, \_migrations)
 - Migration system with versioning
 - Type-safe repository classes for each table using Zod for validation
 - Encrypted storage for API keys via Electron's safeStorage
@@ -38,6 +39,7 @@ Build a robust local persistence layer using SQLite (better-sqlite3) that all fe
 ## Task 1.1: Verify Previous Chapters
 
 **Command:**
+
 ```bash
 npm run typecheck && npm run test:run
 ```
@@ -53,6 +55,7 @@ npm run typecheck && npm run test:run
 ## Task 2.1: Install Database Dependencies
 
 **Command to run:**
+
 ```bash
 npm install better-sqlite3
 ```
@@ -60,6 +63,7 @@ npm install better-sqlite3
 ## Task 2.2: Install Type Definitions
 
 **Command to run:**
+
 ```bash
 npm install -D @types/better-sqlite3
 ```
@@ -67,6 +71,7 @@ npm install -D @types/better-sqlite3
 ## Task 2.3: Install Validation Library
 
 **Command to run:**
+
 ```bash
 npm install zod
 ```
@@ -74,6 +79,7 @@ npm install zod
 ## Task 2.4: Install Native Module Rebuilder
 
 **Command to run:**
+
 ```bash
 npm install -D electron-rebuild
 ```
@@ -81,6 +87,7 @@ npm install -D electron-rebuild
 ## Task 2.5: Rebuild Native Modules for Electron
 
 **Command to run:**
+
 ```bash
 npx electron-rebuild
 ```
@@ -96,11 +103,13 @@ npx electron-rebuild
 **Action:** Add a new script in the `scripts` section. Find the line with `"prepare": "husky"` and ADD a new line above it.
 
 **Add this line:**
+
 ```json
     "postinstall": "electron-rebuild",
 ```
 
 **The scripts section should now look like:**
+
 ```json
   "scripts": {
     "dev": "electron-vite dev",
@@ -129,6 +138,7 @@ npx electron-rebuild
 ## Task 3.1: Create Database Folders
 
 **Commands to run:**
+
 ```bash
 mkdir -p src/main/db
 mkdir -p src/main/db/migrations
@@ -139,6 +149,7 @@ mkdir -p src/main/services
 ## Task 3.2: Verify Structure
 
 **Command:**
+
 ```bash
 ls src/main/db
 ```
@@ -156,6 +167,7 @@ ls src/main/db
 **Action:** Create NEW file with exact content below.
 
 **Exact content:**
+
 ```sql
 -- Schema version tracking
 CREATE TABLE IF NOT EXISTS _migrations (
@@ -303,6 +315,7 @@ CREATE TABLE IF NOT EXISTS tools (
 ## Task 4.2: Verify Schema File
 
 **Command:**
+
 ```bash
 ls src/main/db/schema.sql
 ```
@@ -318,6 +331,7 @@ ls src/main/db/schema.sql
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import Database from 'better-sqlite3'
 import { app } from 'electron'
@@ -402,6 +416,7 @@ export function createTestDatabase(): Database.Database {
 **Action:** OVERWRITE entire file to include schema copying.
 
 **Exact content:**
+
 ```typescript
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
@@ -466,6 +481,7 @@ export default defineConfig({
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import type Database from 'better-sqlite3'
 
@@ -488,9 +504,9 @@ const migrations: Migration[] = [
 
 export function runMigrations(db: Database.Database): void {
   // Get current version
-  const row = db
-    .prepare('SELECT MAX(version) as version FROM _migrations')
-    .get() as { version: number | null }
+  const row = db.prepare('SELECT MAX(version) as version FROM _migrations').get() as {
+    version: number | null
+  }
   const currentVersion = row?.version ?? 0
 
   const pending = migrations.filter((m) => m.version > currentVersion)
@@ -499,9 +515,7 @@ export function runMigrations(db: Database.Database): void {
     return
   }
 
-  const insertMigration = db.prepare(
-    'INSERT INTO _migrations (version, name) VALUES (?, ?)'
-  )
+  const insertMigration = db.prepare('INSERT INTO _migrations (version, name) VALUES (?, ?)')
 
   for (const migration of pending) {
     const transaction = db.transaction(() => {
@@ -513,9 +527,9 @@ export function runMigrations(db: Database.Database): void {
 }
 
 export function getCurrentVersion(db: Database.Database): number {
-  const row = db
-    .prepare('SELECT MAX(version) as version FROM _migrations')
-    .get() as { version: number | null }
+  const row = db.prepare('SELECT MAX(version) as version FROM _migrations').get() as {
+    version: number | null
+  }
   return row?.version ?? 0
 }
 ```
@@ -531,6 +545,7 @@ export function getCurrentVersion(db: Database.Database): number {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { z } from 'zod'
 
@@ -683,6 +698,7 @@ export type Setting = z.infer<typeof SettingSchema>
 **File path:** `src/main/utils/ids.ts`
 
 **Command first:**
+
 ```bash
 mkdir -p src/main/utils
 ```
@@ -690,6 +706,7 @@ mkdir -p src/main/utils
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { randomBytes } from 'crypto'
 
@@ -724,6 +741,7 @@ export const ID_PREFIXES = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import type Database from 'better-sqlite3'
 
@@ -739,6 +757,7 @@ export abstract class BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { BaseRepository } from './BaseRepository'
 import { generateId, ID_PREFIXES } from '../../utils/ids'
@@ -783,9 +802,7 @@ export class ProjectRepository extends BaseRepository {
   }
 
   findAll(): Project[] {
-    const rows = this.db
-      .prepare('SELECT * FROM projects ORDER BY updated_at DESC')
-      .all()
+    const rows = this.db.prepare('SELECT * FROM projects ORDER BY updated_at DESC').all()
     return rows.map((r) => ProjectSchema.parse(r))
   }
 
@@ -844,6 +861,7 @@ export class ProjectRepository extends BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { BaseRepository } from './BaseRepository'
 import { generateId, ID_PREFIXES } from '../../utils/ids'
@@ -894,25 +912,19 @@ export class SessionRepository extends BaseRepository {
   }
 
   updateTitle(id: string, title: string): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?')
     stmt.run(title, new Date().toISOString(), id)
     return this.findById(id)
   }
 
   setPinned(id: string, pinned: boolean): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET pinned = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET pinned = ?, updated_at = ? WHERE id = ?')
     stmt.run(pinned ? 1 : 0, new Date().toISOString(), id)
     return this.findById(id)
   }
 
   setArchived(id: string, archived: boolean): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET archived = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET archived = ?, updated_at = ? WHERE id = ?')
     stmt.run(archived ? 1 : 0, new Date().toISOString(), id)
     return this.findById(id)
   }
@@ -937,6 +949,7 @@ export class SessionRepository extends BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { BaseRepository } from './BaseRepository'
 import { generateId, ID_PREFIXES } from '../../utils/ids'
@@ -1004,9 +1017,7 @@ export class MessageRepository extends BaseRepository {
   }
 
   deleteBySession(sessionId: string): number {
-    const result = this.db
-      .prepare('DELETE FROM messages WHERE session_id = ?')
-      .run(sessionId)
+    const result = this.db.prepare('DELETE FROM messages WHERE session_id = ?').run(sessionId)
     return result.changes
   }
 }
@@ -1019,6 +1030,7 @@ export class MessageRepository extends BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { BaseRepository } from './BaseRepository'
 import { generateId, ID_PREFIXES } from '../../utils/ids'
@@ -1082,9 +1094,9 @@ export class AgentRepository extends BaseRepository {
   }
 
   updateStatus(id: string, status: AgentStatusType, currentAction?: string): Agent | null {
-    const completedAt =
-      status === 'done' || status === 'failed' ? new Date().toISOString() : null
-    const startedAt = status === 'thinking' || status === 'working' ? new Date().toISOString() : null
+    const completedAt = status === 'done' || status === 'failed' ? new Date().toISOString() : null
+    const startedAt =
+      status === 'thinking' || status === 'working' ? new Date().toISOString() : null
 
     const stmt = this.db.prepare(`
       UPDATE agents SET
@@ -1101,9 +1113,7 @@ export class AgentRepository extends BaseRepository {
 
   incrementTokens(id: string, tokensUsed: number, cost: number): void {
     this.db
-      .prepare(
-        'UPDATE agents SET tokens_used = tokens_used + ?, cost = cost + ? WHERE id = ?'
-      )
+      .prepare('UPDATE agents SET tokens_used = tokens_used + ?, cost = cost + ? WHERE id = ?')
       .run(tokensUsed, cost, id)
   }
 
@@ -1121,14 +1131,15 @@ export class AgentRepository extends BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { BaseRepository } from './BaseRepository'
 
 export class SettingsRepository extends BaseRepository {
   get<T = unknown>(key: string): T | null {
-    const row = this.db
-      .prepare('SELECT value_json FROM settings WHERE key = ?')
-      .get(key) as { value_json: string } | undefined
+    const row = this.db.prepare('SELECT value_json FROM settings WHERE key = ?').get(key) as
+      | { value_json: string }
+      | undefined
 
     if (!row) return null
 
@@ -1182,6 +1193,7 @@ export class SettingsRepository extends BaseRepository {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import type Database from 'better-sqlite3'
 import { ProjectRepository } from './ProjectRepository'
@@ -1228,6 +1240,7 @@ export {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { safeStorage } from 'electron'
 import type Database from 'better-sqlite3'
@@ -1277,23 +1290,19 @@ export class SecretStorage {
   }
 
   hasApiKey(provider: string): boolean {
-    const row = this.db
-      .prepare('SELECT 1 FROM api_keys WHERE provider = ?')
-      .get(provider)
+    const row = this.db.prepare('SELECT 1 FROM api_keys WHERE provider = ?').get(provider)
     return !!row
   }
 
   deleteApiKey(provider: string): boolean {
-    const result = this.db
-      .prepare('DELETE FROM api_keys WHERE provider = ?')
-      .run(provider)
+    const result = this.db.prepare('DELETE FROM api_keys WHERE provider = ?').run(provider)
     return result.changes > 0
   }
 
   listProviders(): string[] {
-    const rows = this.db
-      .prepare('SELECT provider FROM api_keys ORDER BY provider')
-      .all() as Array<{ provider: string }>
+    const rows = this.db.prepare('SELECT provider FROM api_keys ORDER BY provider').all() as Array<{
+      provider: string
+    }>
     return rows.map((r) => r.provider)
   }
 }
@@ -1310,6 +1319,7 @@ export class SecretStorage {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { app, BrowserWindow } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
@@ -1379,6 +1389,7 @@ if (!gotTheLock) {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest'
 import Database from 'better-sqlite3'
@@ -1635,6 +1646,7 @@ describe('SettingsRepository', () => {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
@@ -1705,6 +1717,7 @@ npm run build
 **Expected:** Builds successfully. Schema file copied to `out/resources/schema.sql`.
 
 **Verify:**
+
 ```bash
 ls out/resources/schema.sql
 ```
@@ -1718,6 +1731,7 @@ npm run dev
 **Expected:** App launches, terminal shows "Database initialized successfully".
 
 **🛑 USER VERIFICATION REQUIRED:**
+
 - [ ] App launches without errors
 - [ ] Terminal/console shows "Database initialized successfully"
 - [ ] Component Showcase still visible
@@ -1739,36 +1753,43 @@ git commit -m "feat: SQLite database layer with repositories (Chapter 4)"
 # 🏁 FINAL VERIFICATION CHECKLIST
 
 ## ✅ Check 1: All DB files exist
+
 ```bash
 ls src/main/db/index.ts src/main/db/schema.sql src/main/db/migrations/runner.ts
 ```
 
 ## ✅ Check 2: All repository files exist
+
 ```bash
 ls src/main/db/repositories/ProjectRepository.ts src/main/db/repositories/SessionRepository.ts src/main/db/repositories/MessageRepository.ts src/main/db/repositories/AgentRepository.ts src/main/db/repositories/SettingsRepository.ts
 ```
 
 ## ✅ Check 3: Shared types exist
+
 ```bash
 ls src/shared/db-types.ts src/main/utils/ids.ts src/main/services/SecretStorage.ts
 ```
 
 ## ✅ Check 4: TypeScript compiles
+
 ```bash
 npm run typecheck
 ```
 
 ## ✅ Check 5: Lint passes
+
 ```bash
 npm run lint
 ```
 
 ## ✅ Check 6: Tests pass
+
 ```bash
 npm run test:run
 ```
 
 ## ✅ Check 7: Build works with schema copy
+
 ```bash
 npm run build && ls out/resources/schema.sql
 ```
@@ -1776,14 +1797,17 @@ npm run build && ls out/resources/schema.sql
 ## ✅ Check 8: Dev mode initializes DB (user confirmed)
 
 ## ✅ Check 9: Git commit
+
 ```bash
 git log --oneline
 ```
 
 ## ✅ Check 10: Database file created
+
 ```bash
 npm run dev
 ```
+
 Then close and check that DB file was created. On Windows: `%APPDATA%\agent-flow-manager\database\agentflow.db`. On Linux: `~/.config/agent-flow-manager/database/agentflow.db`. On macOS: `~/Library/Application Support/agent-flow-manager/database/agentflow.db`.
 
 ---
@@ -1814,15 +1838,19 @@ Ready to proceed to Chapter 5: State Management Architecture.
 # 🚨 Troubleshooting
 
 ## "Cannot find module better-sqlite3"
+
 Run `npx electron-rebuild` again.
 
 ## Tests fail with "better-sqlite3 was compiled against different Node version"
+
 Run `npm rebuild better-sqlite3` (without electron-rebuild for tests).
 
 ## Database file not created
+
 Check `app.getPath('userData')` returns valid path. Verify write permissions.
 
 ## Schema errors
+
 Verify `schema.sql` syntax is valid SQLite. Test with `sqlite3` CLI if available.
 
 ---

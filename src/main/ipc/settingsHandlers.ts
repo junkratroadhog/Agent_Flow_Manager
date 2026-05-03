@@ -4,16 +4,13 @@ import { ipcSuccess, ipcError, type IPCResult } from '@shared/ipc-types'
 import type { Repositories } from '../db/repositories'
 
 export function registerSettingsHandlers(repos: Repositories): void {
-  ipcMain.handle(
-    IPC.SETTINGS_GET,
-    async (_event, key: string): Promise<IPCResult<unknown>> => {
-      try {
-        return ipcSuccess(repos.settings.get(key))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SETTINGS_GET, async (_event, key: string): Promise<IPCResult<unknown>> => {
+    try {
+      return ipcSuccess(repos.settings.get(key))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.SETTINGS_SET,
@@ -27,14 +24,11 @@ export function registerSettingsHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.SETTINGS_GET_ALL,
-    async (): Promise<IPCResult<Record<string, unknown>>> => {
-      try {
-        return ipcSuccess(repos.settings.getAll())
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SETTINGS_GET_ALL, async (): Promise<IPCResult<Record<string, unknown>>> => {
+    try {
+      return ipcSuccess(repos.settings.getAll())
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }

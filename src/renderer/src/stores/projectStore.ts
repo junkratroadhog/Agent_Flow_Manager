@@ -20,8 +20,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
   loading: false,
 
   setProjects: (projects): void => set({ projects }),
-  addProject: (project): void =>
-    set((s) => ({ projects: [project, ...s.projects] })),
+  addProject: (project): void => set((s) => ({ projects: [project, ...s.projects] })),
   updateProject: (id, updates): void =>
     set((s) => ({
       projects: s.projects.map((p) => (p.id === id ? { ...p, ...updates } : p))

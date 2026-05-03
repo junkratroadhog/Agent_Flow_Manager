@@ -47,25 +47,19 @@ export class SessionRepository extends BaseRepository {
   }
 
   updateTitle(id: string, title: string): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?')
     stmt.run(title, new Date().toISOString(), id)
     return this.findById(id)
   }
 
   setPinned(id: string, pinned: boolean): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET pinned = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET pinned = ?, updated_at = ? WHERE id = ?')
     stmt.run(pinned ? 1 : 0, new Date().toISOString(), id)
     return this.findById(id)
   }
 
   setArchived(id: string, archived: boolean): Session | null {
-    const stmt = this.db.prepare(
-      'UPDATE sessions SET archived = ?, updated_at = ? WHERE id = ?'
-    )
+    const stmt = this.db.prepare('UPDATE sessions SET archived = ?, updated_at = ? WHERE id = ?')
     stmt.run(archived ? 1 : 0, new Date().toISOString(), id)
     return this.findById(id)
   }

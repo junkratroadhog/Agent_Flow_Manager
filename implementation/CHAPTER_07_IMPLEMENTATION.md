@@ -5,6 +5,7 @@
 > You are implementing Chapter 7 of the Agent Flow Manager project. Follow this document EXACTLY in order.
 >
 > **CRITICAL RULES:**
+>
 > 1. Execute each task in the order given. DO NOT skip ahead.
 > 2. After each task, run the verification command. If it fails, STOP and fix before moving on.
 > 3. Copy file contents EXACTLY as written. Do not "improve" or modify them.
@@ -35,6 +36,7 @@ Build the VS Code-style application layout: activity bar (icon rail), collapsibl
 ## Task 1.1: Verify Previous Chapters
 
 **Command:**
+
 ```bash
 npm run typecheck && npm run test:run
 ```
@@ -60,6 +62,7 @@ mkdir -p src/renderer/src/components/Layout
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { MessageSquare, FolderOpen, Wrench, Store, Settings } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from '../ui/Tooltip'
@@ -146,6 +149,7 @@ export default function ActivityBar(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { useUIStore } from '../../stores/uiStore'
 
@@ -212,6 +216,7 @@ export default function LeftSidebar(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/Tabs'
@@ -269,6 +274,7 @@ export default function RightSidebar(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { useState } from 'react'
 import { X } from 'lucide-react'
@@ -330,6 +336,7 @@ export default function BottomPanel(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { Circle, Cpu, Wifi } from 'lucide-react'
 
@@ -367,6 +374,7 @@ export default function StatusBar(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 export default function MainContent(): JSX.Element {
   return (
@@ -395,6 +403,7 @@ export default function MainContent(): JSX.Element {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { useEffect } from 'react'
 import {
@@ -523,6 +532,7 @@ export default function AppShell(): JSX.Element {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { useState, useEffect } from 'react'
 import TitleBar from './components/TitleBar/TitleBar'
@@ -559,6 +569,7 @@ export default App
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { describe, it, expect, beforeAll, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
@@ -626,31 +637,37 @@ describe('App', () => {
 # 📦 SECTION 12: Verification
 
 ## Task 12.1: Type Check
+
 ```bash
 npm run typecheck
 ```
 
 ## Task 12.2: Lint
+
 ```bash
 npm run lint
 ```
 
 ## Task 12.3: Tests
+
 ```bash
 npm run test:run
 ```
 
 ## Task 12.4: Build
+
 ```bash
 npm run build
 ```
 
 ## Task 12.5: Dev Mode
+
 ```bash
 npm run dev
 ```
 
 **🛑 USER VERIFICATION REQUIRED:**
+
 - [ ] Custom title bar at top
 - [ ] Activity bar on left edge with 5 icons (sessions, projects, tools, marketplace, settings)
 - [ ] Left sidebar visible by default with "SESSIONS" header
@@ -683,35 +700,45 @@ git commit -m "feat: VS Code-style layout system with sidebars and panels (Chapt
 # 🏁 FINAL VERIFICATION CHECKLIST
 
 ## ✅ Check 1: Layout components exist
+
 ```bash
 ls src/renderer/src/components/Layout/AppShell.tsx src/renderer/src/components/Layout/ActivityBar.tsx src/renderer/src/components/Layout/LeftSidebar.tsx src/renderer/src/components/Layout/RightSidebar.tsx src/renderer/src/components/Layout/BottomPanel.tsx src/renderer/src/components/Layout/StatusBar.tsx src/renderer/src/components/Layout/MainContent.tsx
 ```
 
 ## ✅ Check 2: TypeScript compiles
+
 ```bash
 npm run typecheck
 ```
 
 ## ✅ Check 3: Lint passes
+
 ```bash
 npm run lint
 ```
 
 ## ✅ Check 4: Tests pass
+
 ```bash
 npm run test:run
 ```
 
 ## ✅ Check 5: Build works
+
 ```bash
 npm run build
 ```
 
 ## ✅ Check 6: Activity bar visible (user confirmed)
+
 ## ✅ Check 7: Sidebars resize (user confirmed)
+
 ## ✅ Check 8: Keyboard shortcuts work (user confirmed)
+
 ## ✅ Check 9: State persists across launches (user confirmed)
+
 ## ✅ Check 10: Git commit
+
 ```bash
 git log --oneline
 ```
@@ -743,17 +770,21 @@ Ready to proceed to Chapter 8: Tab System & Multi-View Support.
 # 🚨 Troubleshooting
 
 ## Sidebars don't resize smoothly
+
 The percentages are recalculated based on `window.innerWidth`. Resizing the window itself can cause minor jumps. This is acceptable.
 
 ## Activity bar buttons don't switch sidebar
+
 - Check that `useUIStore.setLeftSidebarView` is being called (add console.log)
 - Verify `LeftSidebar` reads `leftSidebarView` from store
 
 ## Ctrl+B doesn't work
+
 - Open DevTools → Console → check for errors
 - Some browsers/Electron may capture Ctrl+B; try clicking in the main area first
 
 ## Layout flickers on resize
+
 This is mostly a function of `react-resizable-panels`. Acceptable for now.
 
 ---

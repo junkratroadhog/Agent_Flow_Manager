@@ -7,11 +7,7 @@ import type { Session, CreateSessionInput } from '@shared/db-types'
 export function registerSessionHandlers(repos: Repositories): void {
   ipcMain.handle(
     IPC.SESSION_LIST,
-    async (
-      _event,
-      projectId: string,
-      includeArchived = false
-    ): Promise<IPCResult<Session[]>> => {
+    async (_event, projectId: string, includeArchived = false): Promise<IPCResult<Session[]>> => {
       try {
         return ipcSuccess(repos.sessions.findByProject(projectId, includeArchived))
       } catch (error) {
@@ -75,14 +71,11 @@ export function registerSessionHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.SESSION_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.sessions.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SESSION_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.sessions.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }

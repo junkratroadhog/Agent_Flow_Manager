@@ -24,7 +24,9 @@ const windowControls = {
 
 const platform = {
   get: (): Promise<string> =>
-    ipcRenderer.invoke(IPC.APP_PLATFORM).then((r: IPCResult<string>) => (r.ok ? r.data : 'unknown')),
+    ipcRenderer
+      .invoke(IPC.APP_PLATFORM)
+      .then((r: IPCResult<string>) => (r.ok ? r.data : 'unknown')),
   getVersion: (): Promise<string> =>
     ipcRenderer.invoke(IPC.APP_VERSION).then((r: IPCResult<string>) => (r.ok ? r.data : '0.0.0'))
 }
@@ -54,14 +56,14 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  // @ts-ignore
+  // @ts-expect-error - exposing to window in non-isolated context
   window.electron = electronAPI
-  // @ts-ignore
+  // @ts-expect-error - exposing to window in non-isolated context
   window.api = api
-  // @ts-ignore
+  // @ts-expect-error - exposing to window in non-isolated context
   window.windowControls = windowControls
-  // @ts-ignore
+  // @ts-expect-error - exposing to window in non-isolated context
   window.platform = platform
-  // @ts-ignore
+  // @ts-expect-error - exposing to window in non-isolated context
   window.bridge = bridge
 }

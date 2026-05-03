@@ -7,11 +7,7 @@ import type { Message, CreateMessageInput } from '@shared/db-types'
 export function registerMessageHandlers(repos: Repositories): void {
   ipcMain.handle(
     IPC.MESSAGE_LIST,
-    async (
-      _event,
-      sessionId: string,
-      limit?: number
-    ): Promise<IPCResult<Message[]>> => {
+    async (_event, sessionId: string, limit?: number): Promise<IPCResult<Message[]>> => {
       try {
         return ipcSuccess(repos.messages.findBySession(sessionId, limit))
       } catch (error) {
@@ -34,14 +30,11 @@ export function registerMessageHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.MESSAGE_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.messages.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.MESSAGE_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.messages.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }

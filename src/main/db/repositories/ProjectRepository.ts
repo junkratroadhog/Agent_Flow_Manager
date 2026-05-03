@@ -41,9 +41,7 @@ export class ProjectRepository extends BaseRepository {
   }
 
   findAll(): Project[] {
-    const rows = this.db
-      .prepare('SELECT * FROM projects ORDER BY updated_at DESC')
-      .all()
+    const rows = this.db.prepare('SELECT * FROM projects ORDER BY updated_at DESC').all()
     return rows.map((r) => ProjectSchema.parse(r))
   }
 

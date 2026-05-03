@@ -5,6 +5,7 @@
 > You are implementing Chapter 6 of the Agent Flow Manager project. Follow this document EXACTLY in order.
 >
 > **CRITICAL RULES:**
+>
 > 1. Execute each task in the order given. DO NOT skip ahead.
 > 2. After each task, run the verification command. If it fails, STOP and fix before moving on.
 > 3. Copy file contents EXACTLY as written. Do not "improve" or modify them.
@@ -37,6 +38,7 @@ Build a robust, type-safe IPC (Inter-Process Communication) layer connecting the
 ## Task 1.1: Verify Previous Chapters
 
 **Command:**
+
 ```bash
 npm run typecheck && npm run test:run
 ```
@@ -56,6 +58,7 @@ npm run typecheck && npm run test:run
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 /**
  * Centralized IPC channel names. ALL handlers and renderer calls must use these constants.
@@ -137,6 +140,7 @@ export type IPCEvent = (typeof IPC_EVENTS)[keyof typeof IPC_EVENTS]
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 /**
  * Standard envelope for all IPC responses. Use these helpers to ensure errors
@@ -173,6 +177,7 @@ export function unwrap<T>(result: IPCResult<T>): T {
 **File path:** `src/main/ipc/projectHandlers.ts`
 
 **Command first:**
+
 ```bash
 mkdir -p src/main/ipc
 ```
@@ -180,6 +185,7 @@ mkdir -p src/main/ipc
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -233,16 +239,13 @@ export function registerProjectHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.PROJECT_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.projects.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.PROJECT_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.projects.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }
 ```
 
@@ -253,6 +256,7 @@ export function registerProjectHandlers(repos: Repositories): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -263,11 +267,7 @@ import type { Session, CreateSessionInput } from '@shared/db-types'
 export function registerSessionHandlers(repos: Repositories): void {
   ipcMain.handle(
     IPC.SESSION_LIST,
-    async (
-      _event,
-      projectId: string,
-      includeArchived = false
-    ): Promise<IPCResult<Session[]>> => {
+    async (_event, projectId: string, includeArchived = false): Promise<IPCResult<Session[]>> => {
       try {
         return ipcSuccess(repos.sessions.findByProject(projectId, includeArchived))
       } catch (error) {
@@ -331,16 +331,13 @@ export function registerSessionHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.SESSION_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.sessions.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SESSION_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.sessions.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }
 ```
 
@@ -351,6 +348,7 @@ export function registerSessionHandlers(repos: Repositories): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -361,11 +359,7 @@ import type { Message, CreateMessageInput } from '@shared/db-types'
 export function registerMessageHandlers(repos: Repositories): void {
   ipcMain.handle(
     IPC.MESSAGE_LIST,
-    async (
-      _event,
-      sessionId: string,
-      limit?: number
-    ): Promise<IPCResult<Message[]>> => {
+    async (_event, sessionId: string, limit?: number): Promise<IPCResult<Message[]>> => {
       try {
         return ipcSuccess(repos.messages.findBySession(sessionId, limit))
       } catch (error) {
@@ -388,16 +382,13 @@ export function registerMessageHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.MESSAGE_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.messages.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.MESSAGE_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.messages.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }
 ```
 
@@ -408,6 +399,7 @@ export function registerMessageHandlers(repos: Repositories): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain, BrowserWindow } from 'electron'
 import { IPC, IPC_EVENTS } from '@shared/ipc-channels'
@@ -416,27 +408,21 @@ import type { Repositories } from '../db/repositories'
 import type { Agent, CreateAgentInput, AgentStatusType } from '@shared/db-types'
 
 export function registerAgentHandlers(repos: Repositories): void {
-  ipcMain.handle(
-    IPC.AGENT_LIST,
-    async (_event, sessionId: string): Promise<IPCResult<Agent[]>> => {
-      try {
-        return ipcSuccess(repos.agents.findBySession(sessionId))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.AGENT_LIST, async (_event, sessionId: string): Promise<IPCResult<Agent[]>> => {
+    try {
+      return ipcSuccess(repos.agents.findBySession(sessionId))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
-  ipcMain.handle(
-    IPC.AGENT_GET,
-    async (_event, id: string): Promise<IPCResult<Agent | null>> => {
-      try {
-        return ipcSuccess(repos.agents.findById(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.AGENT_GET, async (_event, id: string): Promise<IPCResult<Agent | null>> => {
+    try {
+      return ipcSuccess(repos.agents.findById(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.AGENT_CHILDREN,
@@ -499,6 +485,7 @@ function broadcastToWindows(channel: string, payload: unknown): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -506,16 +493,13 @@ import { ipcSuccess, ipcError, type IPCResult } from '@shared/ipc-types'
 import type { Repositories } from '../db/repositories'
 
 export function registerSettingsHandlers(repos: Repositories): void {
-  ipcMain.handle(
-    IPC.SETTINGS_GET,
-    async (_event, key: string): Promise<IPCResult<unknown>> => {
-      try {
-        return ipcSuccess(repos.settings.get(key))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SETTINGS_GET, async (_event, key: string): Promise<IPCResult<unknown>> => {
+    try {
+      return ipcSuccess(repos.settings.get(key))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.SETTINGS_SET,
@@ -529,16 +513,13 @@ export function registerSettingsHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.SETTINGS_GET_ALL,
-    async (): Promise<IPCResult<Record<string, unknown>>> => {
-      try {
-        return ipcSuccess(repos.settings.getAll())
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.SETTINGS_GET_ALL, async (): Promise<IPCResult<Record<string, unknown>>> => {
+    try {
+      return ipcSuccess(repos.settings.getAll())
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }
 ```
 
@@ -549,6 +530,7 @@ export function registerSettingsHandlers(repos: Repositories): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -568,16 +550,13 @@ export function registerApiKeyHandlers(secretStorage: SecretStorage): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.APIKEY_HAS,
-    async (_event, provider: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(secretStorage.hasApiKey(provider))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.APIKEY_HAS, async (_event, provider: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(secretStorage.hasApiKey(provider))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.APIKEY_DELETE,
@@ -590,16 +569,13 @@ export function registerApiKeyHandlers(secretStorage: SecretStorage): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.APIKEY_LIST_PROVIDERS,
-    async (): Promise<IPCResult<string[]>> => {
-      try {
-        return ipcSuccess(secretStorage.listProviders())
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.APIKEY_LIST_PROVIDERS, async (): Promise<IPCResult<string[]>> => {
+    try {
+      return ipcSuccess(secretStorage.listProviders())
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }
 ```
 
@@ -610,6 +586,7 @@ export function registerApiKeyHandlers(secretStorage: SecretStorage): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { ipcMain, app } from 'electron'
 import { IPC } from '@shared/ipc-channels'
@@ -649,6 +626,7 @@ export function registerAppHandlers(): void {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import type { Repositories } from '../db/repositories'
 import type { SecretStorage } from '../services/SecretStorage'
@@ -660,10 +638,7 @@ import { registerSettingsHandlers } from './settingsHandlers'
 import { registerApiKeyHandlers } from './apiKeyHandlers'
 import { registerAppHandlers } from './appHandlers'
 
-export function registerAllIpcHandlers(
-  repos: Repositories,
-  secretStorage: SecretStorage
-): void {
+export function registerAllIpcHandlers(repos: Repositories, secretStorage: SecretStorage): void {
   registerProjectHandlers(repos)
   registerSessionHandlers(repos)
   registerMessageHandlers(repos)
@@ -685,6 +660,7 @@ export function registerAllIpcHandlers(
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { app, BrowserWindow } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
@@ -762,6 +738,7 @@ if (!gotTheLock) {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
@@ -789,7 +766,9 @@ const windowControls = {
 
 const platform = {
   get: (): Promise<string> =>
-    ipcRenderer.invoke(IPC.APP_PLATFORM).then((r: IPCResult<string>) => (r.ok ? r.data : 'unknown')),
+    ipcRenderer
+      .invoke(IPC.APP_PLATFORM)
+      .then((r: IPCResult<string>) => (r.ok ? r.data : 'unknown')),
   getVersion: (): Promise<string> =>
     ipcRenderer.invoke(IPC.APP_VERSION).then((r: IPCResult<string>) => (r.ok ? r.data : '0.0.0'))
 }
@@ -839,6 +818,7 @@ if (process.contextIsolated) {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { ElectronAPI } from '@electron-toolkit/preload'
 
@@ -878,6 +858,7 @@ declare global {
 ## Task 6.1: Create Services Folder
 
 **Command:**
+
 ```bash
 mkdir -p src/renderer/src/services
 ```
@@ -889,6 +870,7 @@ mkdir -p src/renderer/src/services
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { unwrap, type IPCResult } from '@shared/ipc-types'
 
@@ -915,6 +897,7 @@ export function subscribe(channel: string, listener: (...args: unknown[]) => voi
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke } from './bridge'
 import { IPC } from '@shared/ipc-channels'
@@ -938,6 +921,7 @@ export const projectService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke } from './bridge'
 import { IPC } from '@shared/ipc-channels'
@@ -966,6 +950,7 @@ export const sessionService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke } from './bridge'
 import { IPC } from '@shared/ipc-channels'
@@ -987,6 +972,7 @@ export const messageService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke, subscribe } from './bridge'
 import { IPC, IPC_EVENTS } from '@shared/ipc-channels'
@@ -1018,6 +1004,7 @@ export const agentService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke } from './bridge'
 import { IPC } from '@shared/ipc-channels'
@@ -1038,6 +1025,7 @@ export const settingsService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { invoke } from './bridge'
 import { IPC } from '@shared/ipc-channels'
@@ -1058,6 +1046,7 @@ export const apiKeyService = {
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 export * from './bridge'
 export * from './projectService'
@@ -1079,6 +1068,7 @@ export * from './apiKeyService'
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { useEffect, useState } from 'react'
 import { Button } from '../components/ui/Button'
@@ -1190,6 +1180,7 @@ export default function IpcSmokeTest(): JSX.Element {
 **Action:** OVERWRITE entire file.
 
 **Exact content:**
+
 ```typescript
 import { useState, useEffect } from 'react'
 import TitleBar from './components/TitleBar/TitleBar'
@@ -1245,6 +1236,7 @@ export default App
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { describe, it, expect } from 'vitest'
 import { ipcSuccess, ipcError, unwrap } from '../../src/shared/ipc-types'
@@ -1277,21 +1269,25 @@ describe('IPC envelope', () => {
 # 📦 SECTION 9: Verification
 
 ## Task 9.1: Type Check
+
 ```bash
 npm run typecheck
 ```
 
 ## Task 9.2: Lint
+
 ```bash
 npm run lint
 ```
 
 ## Task 9.3: Format
+
 ```bash
 npm run format
 ```
 
 ## Task 9.4: Run Tests
+
 ```bash
 npm run test:run
 ```
@@ -1299,6 +1295,7 @@ npm run test:run
 **Expected:** All tests pass.
 
 ## Task 9.5: Build
+
 ```bash
 npm run build
 ```
@@ -1310,6 +1307,7 @@ npm run dev
 ```
 
 **🛑 USER VERIFICATION REQUIRED:**
+
 - [ ] App launches without errors
 - [ ] "IPC Test" tab is shown by default
 - [ ] Empty list initially
@@ -1334,36 +1332,43 @@ git commit -m "feat: type-safe IPC layer with services (Chapter 6)"
 # 🏁 FINAL VERIFICATION CHECKLIST
 
 ## ✅ Check 1: All IPC handler files exist
+
 ```bash
 ls src/main/ipc/projectHandlers.ts src/main/ipc/sessionHandlers.ts src/main/ipc/messageHandlers.ts src/main/ipc/agentHandlers.ts src/main/ipc/settingsHandlers.ts src/main/ipc/apiKeyHandlers.ts src/main/ipc/appHandlers.ts src/main/ipc/index.ts
 ```
 
 ## ✅ Check 2: All renderer service files exist
+
 ```bash
 ls src/renderer/src/services/projectService.ts src/renderer/src/services/sessionService.ts src/renderer/src/services/messageService.ts src/renderer/src/services/agentService.ts src/renderer/src/services/settingsService.ts src/renderer/src/services/apiKeyService.ts
 ```
 
 ## ✅ Check 3: Shared IPC types exist
+
 ```bash
 ls src/shared/ipc-channels.ts src/shared/ipc-types.ts
 ```
 
 ## ✅ Check 4: TypeScript compiles
+
 ```bash
 npm run typecheck
 ```
 
 ## ✅ Check 5: Lint passes
+
 ```bash
 npm run lint
 ```
 
 ## ✅ Check 6: Tests pass
+
 ```bash
 npm run test:run
 ```
 
 ## ✅ Check 7: Build works
+
 ```bash
 npm run build
 ```
@@ -1371,6 +1376,7 @@ npm run build
 ## ✅ Check 8: IPC creates and persists project (user confirmed)
 
 ## ✅ Check 9: Git commit
+
 ```bash
 git log --oneline
 ```
@@ -1403,21 +1409,27 @@ Ready to proceed to Chapter 7: Layout System.
 # 🚨 Troubleshooting
 
 ## "IPC bridge not available"
+
 The bridge wasn't exposed on `window`. Verify preload script (Section 5) and contextIsolation is true in `window.ts`.
 
 ## "Cannot find module '@shared/...'"
+
 Verify alias is set in BOTH `electron.vite.config.ts` AND `tsconfig.web.json` AND `tsconfig.node.json`. If missing in tsconfig, add:
+
 ```json
 "paths": { "@shared/*": ["../shared/*"] }
 ```
+
 Restart TypeScript server.
 
 ## Project list always empty
+
 - Open DevTools, check console for IPC errors
 - Verify main process logged "Database and IPC handlers initialized"
 - Check if DB file was created (path from Chapter 4)
 
 ## "ipcRenderer is undefined"
+
 Sandbox might be disabled. Ensure `sandbox: true` in webPreferences and that contextIsolation works.
 
 ---

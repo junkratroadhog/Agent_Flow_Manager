@@ -5,27 +5,21 @@ import type { Repositories } from '../db/repositories'
 import type { Agent, CreateAgentInput, AgentStatusType } from '@shared/db-types'
 
 export function registerAgentHandlers(repos: Repositories): void {
-  ipcMain.handle(
-    IPC.AGENT_LIST,
-    async (_event, sessionId: string): Promise<IPCResult<Agent[]>> => {
-      try {
-        return ipcSuccess(repos.agents.findBySession(sessionId))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.AGENT_LIST, async (_event, sessionId: string): Promise<IPCResult<Agent[]>> => {
+    try {
+      return ipcSuccess(repos.agents.findBySession(sessionId))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
-  ipcMain.handle(
-    IPC.AGENT_GET,
-    async (_event, id: string): Promise<IPCResult<Agent | null>> => {
-      try {
-        return ipcSuccess(repos.agents.findById(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.AGENT_GET, async (_event, id: string): Promise<IPCResult<Agent | null>> => {
+    try {
+      return ipcSuccess(repos.agents.findById(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.AGENT_CHILDREN,

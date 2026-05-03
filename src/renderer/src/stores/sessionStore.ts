@@ -35,8 +35,7 @@ export const useSessionStore = create<SessionState>((set) => ({
   loading: false,
 
   setSessions: (sessions): void => set({ sessions }),
-  addSession: (session): void =>
-    set((s) => ({ sessions: [session, ...s.sessions] })),
+  addSession: (session): void => set((s) => ({ sessions: [session, ...s.sessions] })),
   updateSession: (id, updates): void =>
     set((s) => ({
       sessions: s.sessions.map((sess) => (sess.id === id ? { ...sess, ...updates } : sess))
@@ -98,4 +97,4 @@ export const selectActiveSession = (state: SessionState): Session | null =>
   state.sessions.find((s) => s.id === state.activeSessionId) ?? null
 
 export const selectActiveMessages = (state: SessionState): Message[] =>
-  state.activeSessionId ? state.messagesBySession[state.activeSessionId] ?? [] : []
+  state.activeSessionId ? (state.messagesBySession[state.activeSessionId] ?? []) : []

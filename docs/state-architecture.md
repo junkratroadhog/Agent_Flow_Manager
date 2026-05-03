@@ -6,15 +6,15 @@ The renderer process uses **Zustand** for state management. Each domain has its 
 
 ## Stores
 
-| Store | Domain | Persisted? |
-|-------|--------|------------|
-| `useUIStore` | Sidebar visibility, widths, theme, active tab | Yes (UI prefs only) |
-| `useProjectStore` | Projects list, active project | No (loaded from DB) |
-| `useSessionStore` | Sessions, messages, drafts | No (loaded from DB) |
-| `useAgentStore` | Agents per session, action logs | No (loaded from DB) |
-| `useFlowStore` | Flow diagram nodes, edges, manual positions | No |
-| `useSettingsStore` | Models, brain modes, preferences | Synced via IPC |
-| `useToolStore` | Installed tools, approvals | Synced via IPC |
+| Store              | Domain                                        | Persisted?          |
+| ------------------ | --------------------------------------------- | ------------------- |
+| `useUIStore`       | Sidebar visibility, widths, theme, active tab | Yes (UI prefs only) |
+| `useProjectStore`  | Projects list, active project                 | No (loaded from DB) |
+| `useSessionStore`  | Sessions, messages, drafts                    | No (loaded from DB) |
+| `useAgentStore`    | Agents per session, action logs               | No (loaded from DB) |
+| `useFlowStore`     | Flow diagram nodes, edges, manual positions   | No                  |
+| `useSettingsStore` | Models, brain modes, preferences              | Synced via IPC      |
+| `useToolStore`     | Installed tools, approvals                    | Synced via IPC      |
 
 ## Sync Pattern
 

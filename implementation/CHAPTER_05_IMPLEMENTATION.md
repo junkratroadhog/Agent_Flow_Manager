@@ -5,6 +5,7 @@
 > You are implementing Chapter 5 of the Agent Flow Manager project. Follow this document EXACTLY in order.
 >
 > **CRITICAL RULES:**
+>
 > 1. Execute each task in the order given. DO NOT skip ahead.
 > 2. After each task, run the verification command. If it fails, STOP and fix before moving on.
 > 3. Copy file contents EXACTLY as written. Do not "improve" or modify them.
@@ -77,6 +78,7 @@ mkdir -p src/renderer/src/stores/middleware
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { type StateCreator, type StoreMutatorIdentifier } from 'zustand'
 import { persist as zustandPersist, type PersistOptions } from 'zustand/middleware'
@@ -129,6 +131,7 @@ export function createPersistedStore<
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -184,15 +187,12 @@ export const useUIStore = create<UIState>()(
       isProjectWizardOpen: false,
       isSettingsOpen: false,
 
-      toggleLeftSidebar: (): void =>
-        set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible })),
+      toggleLeftSidebar: (): void => set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible })),
       setLeftSidebarView: (view): void => set({ leftSidebarView: view }),
       setLeftSidebarWidth: (width): void => set({ leftSidebarWidth: width }),
-      toggleRightSidebar: (): void =>
-        set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible })),
+      toggleRightSidebar: (): void => set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible })),
       setRightSidebarWidth: (width): void => set({ rightSidebarWidth: width }),
-      toggleBottomPanel: (): void =>
-        set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible })),
+      toggleBottomPanel: (): void => set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible })),
       setBottomPanelHeight: (height): void => set({ bottomPanelHeight: height }),
       setTheme: (theme): void => set({ theme }),
       setActiveTabId: (id): void => set({ activeTabId: id }),
@@ -227,6 +227,7 @@ export const useUIStore = create<UIState>()(
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 import type { Project } from '@shared/db-types'
@@ -250,8 +251,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
   loading: false,
 
   setProjects: (projects): void => set({ projects }),
-  addProject: (project): void =>
-    set((s) => ({ projects: [project, ...s.projects] })),
+  addProject: (project): void => set((s) => ({ projects: [project, ...s.projects] })),
   updateProject: (id, updates): void =>
     set((s) => ({
       projects: s.projects.map((p) => (p.id === id ? { ...p, ...updates } : p))
@@ -281,6 +281,7 @@ export const selectActiveProject = (state: ProjectState): Project | null =>
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 import type { Session, Message } from '@shared/db-types'
@@ -319,8 +320,7 @@ export const useSessionStore = create<SessionState>((set) => ({
   loading: false,
 
   setSessions: (sessions): void => set({ sessions }),
-  addSession: (session): void =>
-    set((s) => ({ sessions: [session, ...s.sessions] })),
+  addSession: (session): void => set((s) => ({ sessions: [session, ...s.sessions] })),
   updateSession: (id, updates): void =>
     set((s) => ({
       sessions: s.sessions.map((sess) => (sess.id === id ? { ...sess, ...updates } : sess))
@@ -382,7 +382,7 @@ export const selectActiveSession = (state: SessionState): Session | null =>
   state.sessions.find((s) => s.id === state.activeSessionId) ?? null
 
 export const selectActiveMessages = (state: SessionState): Message[] =>
-  state.activeSessionId ? state.messagesBySession[state.activeSessionId] ?? [] : []
+  state.activeSessionId ? (state.messagesBySession[state.activeSessionId] ?? []) : []
 ```
 
 ---
@@ -396,6 +396,7 @@ export const selectActiveMessages = (state: SessionState): Message[] =>
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 import type { Agent, AgentStatusType } from '@shared/db-types'
@@ -500,7 +501,7 @@ export const useAgentStore = create<AgentState>((set) => ({
 
 // Selectors
 export const selectActiveAgents = (state: AgentState, sessionId: string | null): Agent[] =>
-  sessionId ? state.agentsBySession[sessionId] ?? [] : []
+  sessionId ? (state.agentsBySession[sessionId] ?? []) : []
 
 export const selectAgentChildren = (
   state: AgentState,
@@ -523,6 +524,7 @@ export const selectAgentChildren = (
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 
@@ -617,6 +619,7 @@ export const useFlowStore = create<FlowState>((set) => ({
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 
@@ -701,6 +704,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 import { create } from 'zustand'
 
@@ -774,9 +778,7 @@ export const useToolStore = create<ToolState>((set, get) => ({
 
   clearSessionApprovals: (sessionId): void =>
     set((s) => ({
-      approvals: s.approvals.filter(
-        (a) => !(a.scope === 'session' && a.scopeId === sessionId)
-      )
+      approvals: s.approvals.filter((a) => !(a.scope === 'session' && a.scopeId === sessionId))
     }))
 }))
 ```
@@ -792,6 +794,7 @@ export const useToolStore = create<ToolState>((set, get) => ({
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```typescript
 export * from './uiStore'
 export * from './projectStore'
@@ -813,6 +816,7 @@ export * from './toolStore'
 **Action:** Create NEW file.
 
 **Exact content:**
+
 ```markdown
 # State Architecture
 
@@ -822,26 +826,27 @@ The renderer process uses **Zustand** for state management. Each domain has its 
 
 ## Stores
 
-| Store | Domain | Persisted? |
-|-------|--------|------------|
-| `useUIStore` | Sidebar visibility, widths, theme, active tab | Yes (UI prefs only) |
-| `useProjectStore` | Projects list, active project | No (loaded from DB) |
-| `useSessionStore` | Sessions, messages, drafts | No (loaded from DB) |
-| `useAgentStore` | Agents per session, action logs | No (loaded from DB) |
-| `useFlowStore` | Flow diagram nodes, edges, manual positions | No |
-| `useSettingsStore` | Models, brain modes, preferences | Synced via IPC |
-| `useToolStore` | Installed tools, approvals | Synced via IPC |
+| Store              | Domain                                        | Persisted?          |
+| ------------------ | --------------------------------------------- | ------------------- |
+| `useUIStore`       | Sidebar visibility, widths, theme, active tab | Yes (UI prefs only) |
+| `useProjectStore`  | Projects list, active project                 | No (loaded from DB) |
+| `useSessionStore`  | Sessions, messages, drafts                    | No (loaded from DB) |
+| `useAgentStore`    | Agents per session, action logs               | No (loaded from DB) |
+| `useFlowStore`     | Flow diagram nodes, edges, manual positions   | No                  |
+| `useSettingsStore` | Models, brain modes, preferences              | Synced via IPC      |
+| `useToolStore`     | Installed tools, approvals                    | Synced via IPC      |
 
 ## Sync Pattern
+```
 
-```
-┌────────────────┐                ┌─────────────────┐
-│ Renderer       │   IPC invoke   │ Main Process    │
-│ Zustand Store  │ ─────────────> │ Repository      │
-│                │ <───────────── │ SQLite          │
-│                │   IPC events   │                 │
-└────────────────┘                └─────────────────┘
-```
+┌────────────────┐ ┌─────────────────┐
+│ Renderer │ IPC invoke │ Main Process │
+│ Zustand Store │ ─────────────> │ Repository │
+│ │ <───────────── │ SQLite │
+│ │ IPC events │ │
+└────────────────┘ └─────────────────┘
+
+````
 
 1. **Initial Load:** Renderer requests data from main via IPC, populates store.
 2. **Mutations:** Renderer calls IPC, main updates DB, broadcasts event.
@@ -854,7 +859,7 @@ Stores expose selectors to prevent unnecessary re-renders:
 ```typescript
 const project = useProjectStore(selectActiveProject)
 const messages = useSessionStore(selectActiveMessages)
-```
+````
 
 Always prefer selectors over reading the whole state.
 
@@ -871,7 +876,8 @@ All other state is hydrated from main process on app start.
 3. Export selectors if needed
 4. Add to `src/renderer/src/stores/index.ts`
 5. Document in this file
-```
+
+````
 
 ---
 
@@ -1060,28 +1066,32 @@ describe('toolStore', () => {
     expect(useToolStore.getState().hasApproval('x')).toBe(false)
   })
 })
-```
+````
 
 ---
 
 # 📦 SECTION 15: Verification
 
 ## Task 15.1: Type Check
+
 ```bash
 npm run typecheck
 ```
 
 ## Task 15.2: Lint
+
 ```bash
 npm run lint
 ```
 
 ## Task 15.3: Format
+
 ```bash
 npm run format
 ```
 
 ## Task 15.4: Tests
+
 ```bash
 npm run test:run
 ```
@@ -1089,16 +1099,19 @@ npm run test:run
 **Expected:** All tests pass (previous tests + new store tests).
 
 ## Task 15.5: Build
+
 ```bash
 npm run build
 ```
 
 ## Task 15.6: Dev Mode
+
 ```bash
 npm run dev
 ```
 
 **🛑 USER VERIFICATION:**
+
 - [ ] App launches normally
 - [ ] No console errors
 - [ ] Component Showcase still visible
@@ -1117,31 +1130,37 @@ git commit -m "feat: Zustand state management with domain stores (Chapter 5)"
 # 🏁 FINAL VERIFICATION CHECKLIST
 
 ## ✅ Check 1: All store files exist
+
 ```bash
 ls src/renderer/src/stores/uiStore.ts src/renderer/src/stores/projectStore.ts src/renderer/src/stores/sessionStore.ts src/renderer/src/stores/agentStore.ts src/renderer/src/stores/flowStore.ts src/renderer/src/stores/settingsStore.ts src/renderer/src/stores/toolStore.ts
 ```
 
 ## ✅ Check 2: Documentation exists
+
 ```bash
 ls docs/state-architecture.md
 ```
 
 ## ✅ Check 3: TypeScript compiles
+
 ```bash
 npm run typecheck
 ```
 
 ## ✅ Check 4: Lint passes
+
 ```bash
 npm run lint
 ```
 
 ## ✅ Check 5: Tests pass
+
 ```bash
 npm run test:run
 ```
 
 ## ✅ Check 6: Build works
+
 ```bash
 npm run build
 ```
@@ -1149,6 +1168,7 @@ npm run build
 ## ✅ Check 7: Dev mode works (user confirmed)
 
 ## ✅ Check 8: Git commit
+
 ```bash
 git log --oneline
 ```

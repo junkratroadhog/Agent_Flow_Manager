@@ -16,16 +16,13 @@ export function registerApiKeyHandlers(secretStorage: SecretStorage): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.APIKEY_HAS,
-    async (_event, provider: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(secretStorage.hasApiKey(provider))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.APIKEY_HAS, async (_event, provider: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(secretStorage.hasApiKey(provider))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 
   ipcMain.handle(
     IPC.APIKEY_DELETE,
@@ -38,14 +35,11 @@ export function registerApiKeyHandlers(secretStorage: SecretStorage): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.APIKEY_LIST_PROVIDERS,
-    async (): Promise<IPCResult<string[]>> => {
-      try {
-        return ipcSuccess(secretStorage.listProviders())
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.APIKEY_LIST_PROVIDERS, async (): Promise<IPCResult<string[]>> => {
+    try {
+      return ipcSuccess(secretStorage.listProviders())
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }

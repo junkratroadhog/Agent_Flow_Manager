@@ -182,10 +182,18 @@ export default function ComponentShowcase(): JSX.Element {
           <section className="space-y-3">
             <h2 className="text-lg font-medium text-text-primary">Color Tokens</h2>
             <div className="grid grid-cols-4 gap-2 text-[10px]">
-              <div className="bg-bg-deepest border border-border p-3 rounded text-text-tertiary">bg-deepest</div>
-              <div className="bg-bg-deep border border-border p-3 rounded text-text-tertiary">bg-deep</div>
-              <div className="bg-bg-surface border border-border p-3 rounded text-text-tertiary">bg-surface</div>
-              <div className="bg-bg-elevated border border-border p-3 rounded text-text-tertiary">bg-elevated</div>
+              <div className="bg-bg-deepest border border-border p-3 rounded text-text-tertiary">
+                bg-deepest
+              </div>
+              <div className="bg-bg-deep border border-border p-3 rounded text-text-tertiary">
+                bg-deep
+              </div>
+              <div className="bg-bg-surface border border-border p-3 rounded text-text-tertiary">
+                bg-surface
+              </div>
+              <div className="bg-bg-elevated border border-border p-3 rounded text-text-tertiary">
+                bg-elevated
+              </div>
               <div className="bg-accent text-accent-foreground p-3 rounded">accent</div>
               <div className="bg-status-success text-white p-3 rounded">success</div>
               <div className="bg-status-error text-white p-3 rounded">error</div>

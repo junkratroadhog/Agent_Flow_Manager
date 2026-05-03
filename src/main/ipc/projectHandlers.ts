@@ -50,14 +50,11 @@ export function registerProjectHandlers(repos: Repositories): void {
     }
   )
 
-  ipcMain.handle(
-    IPC.PROJECT_DELETE,
-    async (_event, id: string): Promise<IPCResult<boolean>> => {
-      try {
-        return ipcSuccess(repos.projects.delete(id))
-      } catch (error) {
-        return ipcError(error)
-      }
+  ipcMain.handle(IPC.PROJECT_DELETE, async (_event, id: string): Promise<IPCResult<boolean>> => {
+    try {
+      return ipcSuccess(repos.projects.delete(id))
+    } catch (error) {
+      return ipcError(error)
     }
-  )
+  })
 }

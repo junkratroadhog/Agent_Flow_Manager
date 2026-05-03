@@ -70,8 +70,6 @@ export const useToolStore = create<ToolState>((set, get) => ({
 
   clearSessionApprovals: (sessionId): void =>
     set((s) => ({
-      approvals: s.approvals.filter(
-        (a) => !(a.scope === 'session' && a.scopeId === sessionId)
-      )
+      approvals: s.approvals.filter((a) => !(a.scope === 'session' && a.scopeId === sessionId))
     }))
 }))

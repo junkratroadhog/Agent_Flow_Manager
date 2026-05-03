@@ -2,9 +2,9 @@ import { BaseRepository } from './BaseRepository'
 
 export class SettingsRepository extends BaseRepository {
   get<T = unknown>(key: string): T | null {
-    const row = this.db
-      .prepare('SELECT value_json FROM settings WHERE key = ?')
-      .get(key) as { value_json: string } | undefined
+    const row = this.db.prepare('SELECT value_json FROM settings WHERE key = ?').get(key) as
+      | { value_json: string }
+      | undefined
 
     if (!row) return null
 

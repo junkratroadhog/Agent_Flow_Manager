@@ -101,7 +101,7 @@ export const useAgentStore = create<AgentState>((set) => ({
 
 // Selectors
 export const selectActiveAgents = (state: AgentState, sessionId: string | null): Agent[] =>
-  sessionId ? state.agentsBySession[sessionId] ?? [] : []
+  sessionId ? (state.agentsBySession[sessionId] ?? []) : []
 
 export const selectAgentChildren = (
   state: AgentState,

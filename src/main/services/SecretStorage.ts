@@ -46,23 +46,19 @@ export class SecretStorage {
   }
 
   hasApiKey(provider: string): boolean {
-    const row = this.db
-      .prepare('SELECT 1 FROM api_keys WHERE provider = ?')
-      .get(provider)
+    const row = this.db.prepare('SELECT 1 FROM api_keys WHERE provider = ?').get(provider)
     return !!row
   }
 
   deleteApiKey(provider: string): boolean {
-    const result = this.db
-      .prepare('DELETE FROM api_keys WHERE provider = ?')
-      .run(provider)
+    const result = this.db.prepare('DELETE FROM api_keys WHERE provider = ?').run(provider)
     return result.changes > 0
   }
 
   listProviders(): string[] {
-    const rows = this.db
-      .prepare('SELECT provider FROM api_keys ORDER BY provider')
-      .all() as Array<{ provider: string }>
+    const rows = this.db.prepare('SELECT provider FROM api_keys ORDER BY provider').all() as Array<{
+      provider: string
+    }>
     return rows.map((r) => r.provider)
   }
 }

@@ -52,15 +52,12 @@ export const useUIStore = create<UIState>()(
       isProjectWizardOpen: false,
       isSettingsOpen: false,
 
-      toggleLeftSidebar: () =>
-        set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible })),
+      toggleLeftSidebar: () => set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible })),
       setLeftSidebarView: (view) => set({ leftSidebarView: view }),
       setLeftSidebarWidth: (width) => set({ leftSidebarWidth: width }),
-      toggleRightSidebar: () =>
-        set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible })),
+      toggleRightSidebar: () => set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible })),
       setRightSidebarWidth: (width) => set({ rightSidebarWidth: width }),
-      toggleBottomPanel: () =>
-        set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible })),
+      toggleBottomPanel: () => set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible })),
       setBottomPanelHeight: (height) => set({ bottomPanelHeight: height }),
       setTheme: (theme) => set({ theme }),
       setActiveTabId: (id) => set({ activeTabId: id }),

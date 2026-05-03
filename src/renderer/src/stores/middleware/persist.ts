@@ -34,6 +34,6 @@ export function createPersistedStore<
     options.partialize = partialize
   }
 
-  // Use any cast to avoid complex Zustand middleware type issues in wrapper
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return zustandPersist(initializer as any, options) as unknown as StateCreator<T, Mps, Mcs>
 }

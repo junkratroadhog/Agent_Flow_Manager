@@ -39,12 +39,7 @@ function isValidState(state: WindowState): boolean {
   const isOnAnyDisplay = displays.some((display) => {
     const { x, y, width, height } = display.bounds
     // Check if the top-left corner is within any display's bounds (with 50px leeway)
-    return (
-      state.x! >= x - 50 &&
-      state.y! >= y - 50 &&
-      state.x! < x + width &&
-      state.y! < y + height
-    )
+    return state.x! >= x - 50 && state.y! >= y - 50 && state.x! < x + width && state.y! < y + height
   })
 
   return isOnAnyDisplay
