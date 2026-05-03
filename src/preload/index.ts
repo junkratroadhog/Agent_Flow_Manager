@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
 import { IPC, IPC_EVENTS } from '../shared/ipc-channels'
 import type { IPCResult } from '../shared/ipc-types'
 
@@ -47,7 +46,6 @@ const bridge = {
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('windowControls', windowControls)
     contextBridge.exposeInMainWorld('platform', platform)
@@ -56,8 +54,6 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  // @ts-expect-error - exposing to window in non-isolated context
-  window.electron = electronAPI
   // @ts-expect-error - exposing to window in non-isolated context
   window.api = api
   // @ts-expect-error - exposing to window in non-isolated context

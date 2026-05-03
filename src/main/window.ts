@@ -16,7 +16,6 @@ export function createMainWindow(): BrowserWindow {
     minWidth: 1024,
     minHeight: 768,
     show: false,
-    frame: false,
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'hidden',
     backgroundColor: '#0a0a0a',
     title: 'Agent Flow Manager',

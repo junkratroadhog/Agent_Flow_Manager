@@ -36,7 +36,7 @@ function TitleBar({ title = 'Agent Flow Manager' }: TitleBarProps): JSX.Element 
         'flex items-center h-9 bg-bg-deepest border-b border-border-subtle select-none flex-shrink-0',
         isMac && 'pl-20'
       )}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 1000, WebkitAppRegion: 'no-drag' } as React.CSSProperties}
     >
       <div
         className="flex-1 h-full flex items-center px-3"
