@@ -4,11 +4,9 @@ import { createMainWindow, focusMainWindow } from './window'
 import { registerWindowHandlers, attachWindowStateEvents } from './ipcHandlers'
 import { initDatabase, closeDatabase } from './db'
 import { runMigrations } from './db/migrations/runner'
-import { createRepositories, type Repositories } from './db/repositories'
+import { createRepositories } from './db/repositories'
 import { SecretStorage } from './services/SecretStorage'
 import { registerAllIpcHandlers } from './ipc'
-
-let repos: Repositories | null = null
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -31,7 +29,6 @@ if (!gotTheLock) {
       const db = initDatabase()
       runMigrations(db)
       const repositories = createRepositories(db)
-      repos = repositories
       const secretStorage = new SecretStorage(db)
       registerAllIpcHandlers(repositories, secretStorage)
       console.info('Database and IPC handlers initialized')

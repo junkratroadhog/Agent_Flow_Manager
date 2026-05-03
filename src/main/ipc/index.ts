@@ -6,7 +6,6 @@ import { registerMessageHandlers } from './messageHandlers'
 import { registerAgentHandlers } from './agentHandlers'
 import { registerSettingsHandlers } from './settingsHandlers'
 import { registerApiKeyHandlers } from './apiKeyHandlers'
-import { registerAppHandlers } from './appHandlers'
 
 export function registerAllIpcHandlers(repos: Repositories, secretStorage: SecretStorage): void {
   registerProjectHandlers(repos)
