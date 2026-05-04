@@ -59,7 +59,7 @@ export default function AppShell(): JSX.Element {
                 <ResizablePanel
                   defaultSize={leftSidebarDefaultSize}
                   minSize={0}
-                  maxSize={95}
+                  maxSize={100}
                   onResize={(size) => {
                     const px = Math.round((size / 100) * (window.innerWidth || 1200))
                     if (px > 0) setLeftSidebarWidth(px)
@@ -71,20 +71,9 @@ export default function AppShell(): JSX.Element {
                 <ResizableHandle withHandle />
               </>
             )}
-            <ResizablePanel
-              defaultSize={60}
-              minSize={5}
-              className="flex flex-col h-full overflow-hidden"
-            >
-              <ResizablePanelGroup
-                orientation="vertical"
-                className="flex-1 h-full w-full overflow-hidden"
-              >
-                <ResizablePanel
-                  defaultSize={bottomPanelVisible ? 70 : 100}
-                  minSize={5}
-                  className="h-full overflow-hidden"
-                >
+            <ResizablePanel defaultSize={60} minSize={0} className="flex flex-col h-full">
+              <ResizablePanelGroup orientation="vertical" className="flex-1 h-full w-full">
+                <ResizablePanel defaultSize={70} minSize={0} className="h-full overflow-hidden">
                   <MainContent />
                 </ResizablePanel>
                 {bottomPanelVisible && (
@@ -93,7 +82,7 @@ export default function AppShell(): JSX.Element {
                     <ResizablePanel
                       defaultSize={bottomPanelDefaultSize}
                       minSize={0}
-                      maxSize={95}
+                      maxSize={100}
                       onResize={(size) => {
                         const px = Math.round((size / 100) * (window.innerHeight || 800))
                         if (px > 0) setBottomPanelHeight(px)
@@ -112,7 +101,7 @@ export default function AppShell(): JSX.Element {
                 <ResizablePanel
                   defaultSize={rightSidebarDefaultSize}
                   minSize={0}
-                  maxSize={95}
+                  maxSize={100}
                   onResize={(size) => {
                     const px = Math.round((size / 100) * (window.innerWidth || 1200))
                     if (px > 0) setRightSidebarWidth(px)
