@@ -38,12 +38,20 @@ export default function AppShell(): JSX.Element {
     return () => window.removeEventListener('keydown', handler)
   }, [toggleLeftSidebar, toggleBottomPanel])
 
-  const leftSidebarDefaultSize =
-    leftSidebarWidth > 0 ? (leftSidebarWidth / (window.innerWidth || 1200)) * 100 : 20
-  const bottomPanelDefaultSize =
-    bottomPanelHeight > 0 ? (bottomPanelHeight / (window.innerHeight || 800)) * 100 : 25
-  const rightSidebarDefaultSize =
-    rightSidebarWidth > 0 ? (rightSidebarWidth / (window.innerWidth || 1200)) * 100 : 25
+  // Calculate percentage sizes (must sum to 100)
+  const innerWidth = window.innerWidth || 1200
+  const innerHeight = window.innerHeight || 800
+
+  const leftPct = leftSidebarVisible ? Math.min(90, (leftSidebarWidth / innerWidth) * 100 || 20) : 0
+  const rightPct = rightSidebarVisible
+    ? Math.min(90, (rightSidebarWidth / innerWidth) * 100 || 20)
+    : 0
+  const centerPct = 100 - leftPct - rightPct
+
+  const bottomPct = bottomPanelVisible
+    ? Math.min(90, (bottomPanelHeight / innerHeight) * 100 || 25)
+    : 0
+  const mainPct = 100 - bottomPct
 
   return (
     <TooltipProvider>
@@ -57,7 +65,7 @@ export default function AppShell(): JSX.Element {
             {leftSidebarVisible && (
               <>
                 <ResizablePanel
-                  defaultSize={leftSidebarDefaultSize}
+                  defaultSize={leftPct}
                   minSize={0}
                   maxSize={100}
                   onResize={(size) => {
@@ -71,16 +79,20 @@ export default function AppShell(): JSX.Element {
                 <ResizableHandle withHandle />
               </>
             )}
-            <ResizablePanel defaultSize={60} minSize={0} className="flex flex-col h-full">
+            <ResizablePanel defaultSize={centerPct} minSize={0} className="flex flex-col h-full">
               <ResizablePanelGroup orientation="vertical" className="flex-1 h-full w-full">
-                <ResizablePanel defaultSize={70} minSize={0} className="h-full overflow-hidden">
+                <ResizablePanel
+                  defaultSize={mainPct}
+                  minSize={0}
+                  className="h-full overflow-hidden"
+                >
                   <MainContent />
                 </ResizablePanel>
                 {bottomPanelVisible && (
                   <>
                     <ResizableHandle withHandle />
                     <ResizablePanel
-                      defaultSize={bottomPanelDefaultSize}
+                      defaultSize={bottomPct}
                       minSize={0}
                       maxSize={100}
                       onResize={(size) => {
@@ -99,7 +111,7 @@ export default function AppShell(): JSX.Element {
               <>
                 <ResizableHandle withHandle />
                 <ResizablePanel
-                  defaultSize={rightSidebarDefaultSize}
+                  defaultSize={rightPct}
                   minSize={0}
                   maxSize={100}
                   onResize={(size) => {
