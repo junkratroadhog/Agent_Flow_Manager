@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '../ui/Resizable'
 import { TooltipProvider } from '../ui/Tooltip'
 import { useUIStore } from '../../stores/uiStore'
@@ -38,20 +38,24 @@ export default function AppShell(): JSX.Element {
     return () => window.removeEventListener('keydown', handler)
   }, [toggleLeftSidebar, toggleBottomPanel])
 
-  // Calculate percentage sizes (must sum to 100)
-  const innerWidth = window.innerWidth || 1200
-  const innerHeight = window.innerHeight || 800
+  // Calculate initial sizes ONCE to prevent re-render "tug-of-war"
+  const initialSizes = useMemo(() => {
+    const innerWidth = window.innerWidth || 1200
+    const innerHeight = window.innerHeight || 800
 
-  const leftPct = leftSidebarVisible ? Math.min(90, (leftSidebarWidth / innerWidth) * 100 || 20) : 0
-  const rightPct = rightSidebarVisible
-    ? Math.min(90, (rightSidebarWidth / innerWidth) * 100 || 20)
-    : 0
-  const centerPct = 100 - leftPct - rightPct
+    const leftPct = (leftSidebarWidth / innerWidth) * 100 || 20
+    const rightPct = (rightSidebarWidth / innerWidth) * 100 || 20
+    const bottomPct = (bottomPanelHeight / innerHeight) * 100 || 25
 
-  const bottomPct = bottomPanelVisible
-    ? Math.min(90, (bottomPanelHeight / innerHeight) * 100 || 25)
-    : 0
-  const mainPct = 100 - bottomPct
+    return {
+      left: leftPct,
+      right: rightPct,
+      bottom: bottomPct,
+      center: 100 - leftPct - rightPct,
+      main: 100 - bottomPct
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty deps = only calculate on mount
 
   return (
     <TooltipProvider>
@@ -65,11 +69,11 @@ export default function AppShell(): JSX.Element {
             {leftSidebarVisible && (
               <>
                 <ResizablePanel
-                  defaultSize={leftPct}
+                  defaultSize={initialSizes.left}
                   minSize={0}
                   maxSize={100}
                   onResize={(size) => {
-                    const px = Math.round((size / 100) * (window.innerWidth || 1200))
+                    const px = Math.round((size / 100) * window.innerWidth)
                     if (px > 0) setLeftSidebarWidth(px)
                   }}
                   className="h-full overflow-hidden"
@@ -79,10 +83,14 @@ export default function AppShell(): JSX.Element {
                 <ResizableHandle withHandle />
               </>
             )}
-            <ResizablePanel defaultSize={centerPct} minSize={0} className="flex flex-col h-full">
+            <ResizablePanel
+              defaultSize={initialSizes.center}
+              minSize={0}
+              className="flex flex-col h-full"
+            >
               <ResizablePanelGroup orientation="vertical" className="flex-1 h-full w-full">
                 <ResizablePanel
-                  defaultSize={mainPct}
+                  defaultSize={initialSizes.main}
                   minSize={0}
                   className="h-full overflow-hidden"
                 >
@@ -92,11 +100,11 @@ export default function AppShell(): JSX.Element {
                   <>
                     <ResizableHandle withHandle />
                     <ResizablePanel
-                      defaultSize={bottomPct}
+                      defaultSize={initialSizes.bottom}
                       minSize={0}
                       maxSize={100}
                       onResize={(size) => {
-                        const px = Math.round((size / 100) * (window.innerHeight || 800))
+                        const px = Math.round((size / 100) * window.innerHeight)
                         if (px > 0) setBottomPanelHeight(px)
                       }}
                       className="h-full overflow-hidden"
@@ -111,11 +119,11 @@ export default function AppShell(): JSX.Element {
               <>
                 <ResizableHandle withHandle />
                 <ResizablePanel
-                  defaultSize={rightPct}
+                  defaultSize={initialSizes.right}
                   minSize={0}
                   maxSize={100}
                   onResize={(size) => {
-                    const px = Math.round((size / 100) * (window.innerWidth || 1200))
+                    const px = Math.round((size / 100) * window.innerWidth)
                     if (px > 0) setRightSidebarWidth(px)
                   }}
                   className="h-full overflow-hidden"
