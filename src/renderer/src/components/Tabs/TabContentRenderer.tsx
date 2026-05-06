@@ -1,5 +1,6 @@
 import { useUIStore } from '../../stores/uiStore'
 import SessionToolbar from '../Chat/SessionToolbar'
+import ChatView from '../Chat/ChatView'
 
 export default function TabContentRenderer(): JSX.Element {
   const tabs = useUIStore((s) => s.tabs)
@@ -18,13 +19,10 @@ export default function TabContentRenderer(): JSX.Element {
   switch (activeTab.type) {
     case 'chat':
       return (
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 relative h-full">
           <SessionToolbar />
-          <div className="flex-1 flex items-center justify-center p-8 text-center animate-in fade-in duration-300">
-            <div>
-              <h3 className="text-lg font-medium mb-2">Chat View: {activeTab.title}</h3>
-              <p className="text-sm text-text-secondary">Message history and input will go here.</p>
-            </div>
+          <div className="flex-1 relative min-h-0">
+            <ChatView sessionId={activeTab.id} />
           </div>
         </div>
       )

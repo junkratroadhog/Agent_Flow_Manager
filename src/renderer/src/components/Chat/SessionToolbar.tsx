@@ -1,17 +1,7 @@
 import { useSettingsStore, useSessionStore } from '../../stores'
-import {
-  Brain,
-  Pin,
-  Trash2,
-  Archive,
-  MoreHorizontal,
-  Zap,
-  Activity,
-  Layers,
-  Search
-} from 'lucide-react'
+import { Brain, Pin, Trash2, Archive, MoreHorizontal, Zap, Layers, Search } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '../ui/Tooltip'
+import { Tooltip, TooltipTrigger, TooltipContent } from '../ui/Tooltip'
 import { clsx } from 'clsx'
 
 export default function SessionToolbar(): JSX.Element {

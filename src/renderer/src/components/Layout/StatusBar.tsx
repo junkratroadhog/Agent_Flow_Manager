@@ -1,10 +1,15 @@
-import { useProjectStore, useSettingsStore, useAgentStore, useSessionStore } from '../../stores'
+import {
+  useProjectStore,
+  useSettingsStore,
+  useAgentStore,
+  useSessionStore,
+  selectActiveProject
+} from '../../stores'
 import { Circle, Cpu, Wifi, Brain, Hash, Box } from 'lucide-react'
-import { clsx } from 'clsx'
 
 export default function StatusBar(): JSX.Element {
   const { currentBrainMode, brainModes, primaryModel } = useSettingsStore()
-  const { activeProject } = useProjectStore()
+  const activeProject = useProjectStore(selectActiveProject)
   const { activeSessionId } = useSessionStore()
   const { agentsBySession } = useAgentStore()
 
