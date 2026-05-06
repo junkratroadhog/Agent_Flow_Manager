@@ -65,7 +65,7 @@ export default function AppShell(): JSX.Element {
   const bottomTransition = pm.isDraggingBottom ? DRAG_TRANSITION_NONE : PANEL_TRANSITION
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={300}>
       <div className="flex flex-col h-full overflow-hidden">
         {/* Top region: contains activity bar + the panel grid */}
         <div className="relative flex-1 flex overflow-hidden">
