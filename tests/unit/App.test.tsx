@@ -46,7 +46,7 @@ describe('App', () => {
   it('renders the layout shell', () => {
     render(<App />)
     // Welcome message in MainContent
-    expect(screen.getByText(/Welcome to Agent Flow Manager/i)).toBeInTheDocument()
+    expect(screen.getByText(/Welcome to your Antigravity-inspired workspace/i)).toBeInTheDocument()
   })
 
   it('renders activity bar items', () => {
