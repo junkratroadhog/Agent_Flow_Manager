@@ -90,7 +90,7 @@ export default function ResizeHandle({
         className={cn(
           'transition-colors',
           isVertical ? 'h-full' : 'w-full',
-          isDragging ? 'bg-accent' : 'bg-transparent group-hover:bg-accent/50'
+          isDragging ? 'bg-accent' : 'bg-border-default/50 group-hover:bg-accent/80'
         )}
         style={{
           width: isVertical ? RESIZE_HANDLE_WIDTH : '100%',

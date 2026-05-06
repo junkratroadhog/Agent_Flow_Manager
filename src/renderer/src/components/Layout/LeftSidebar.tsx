@@ -14,7 +14,7 @@ export default function LeftSidebar(): JSX.Element {
   const title = view ? (titles[view] ?? 'Sidebar') : 'Sidebar'
 
   return (
-    <div className="flex flex-col h-full bg-bg-deep">
+    <div className="flex flex-col h-full bg-bg-surface">
       <div className="h-9 flex items-center px-3 border-b border-border-subtle">
         <span className="text-xs uppercase tracking-wider text-text-tertiary font-semibold">
           {title}

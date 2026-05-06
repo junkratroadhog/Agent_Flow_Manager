@@ -5,7 +5,7 @@ export default function RightSidebar(): JSX.Element {
   const [tab, setTab] = useState('inspector')
 
   return (
-    <div className="flex flex-col h-full bg-bg-deep border-l border-border-subtle">
+    <div className="flex flex-col h-full bg-bg-surface border-l border-border-subtle">
       <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full">
         <div className="h-9 flex items-center px-2 border-b border-border-subtle">
           <TabsList className="h-7">
