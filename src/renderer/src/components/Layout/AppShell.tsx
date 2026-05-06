@@ -21,12 +21,31 @@ export default function AppShell(): JSX.Element {
   useEffect(() => {
     const handler = (e: KeyboardEvent): void => {
       const ctrl = e.ctrlKey || e.metaKey
-      if (ctrl && e.key.toLowerCase() === 'b') {
+      const shift = e.shiftKey
+      const key = e.key.toLowerCase()
+
+      if (ctrl && key === 'b') {
         e.preventDefault()
         toggleLeftSidebar()
-      } else if (ctrl && e.key.toLowerCase() === 'j') {
+      } else if (ctrl && key === 'j') {
         e.preventDefault()
         toggleBottomPanel()
+      } else if (ctrl && key === 't') {
+        e.preventDefault()
+        useUIStore.getState().addTab({ type: 'chat', title: 'New Chat' })
+      } else if (ctrl && key === 'w') {
+        const { activeTabId, closeTab } = useUIStore.getState()
+        if (activeTabId) {
+          e.preventDefault()
+          closeTab(activeTabId)
+        }
+      } else if (ctrl && key === 'tab') {
+        e.preventDefault()
+        if (shift) {
+          useUIStore.getState().prevTab()
+        } else {
+          useUIStore.getState().nextTab()
+        }
       }
     }
     window.addEventListener('keydown', handler)

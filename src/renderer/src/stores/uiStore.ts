@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { TabMetadata } from '../components/Tabs/types'
 
 export type SidebarView = 'sessions' | 'projects' | 'tools' | 'marketplace' | 'settings' | null
 
@@ -25,7 +26,8 @@ export interface UIState {
   // Theme
   theme: 'dark' | 'light'
 
-  // Active tab
+  // Tabs
+  tabs: TabMetadata[]
   activeTabId: string | null
 
   // Modals
@@ -45,9 +47,20 @@ export interface UIState {
   setRightSidebarAutoCollapsed: (collapsed: boolean) => void
   setLeftSidebarAutoCollapsed: (collapsed: boolean) => void
 
+  // Tabs actions
+  addTab: (tab: Partial<TabMetadata>) => void
+  closeTab: (id: string) => void
+  setActiveTabId: (id: string | null) => void
+  reorderTabs: (startIndex: number, endIndex: number) => void
+  updateTab: (id: string, updates: Partial<TabMetadata>) => void
+  closeOtherTabs: (id: string) => void
+  closeTabsToTheRight: (id: string) => void
+  closeAllTabs: () => void
+  nextTab: () => void
+  prevTab: () => void
+
   // Misc
   setTheme: (theme: 'dark' | 'light') => void
-  setActiveTabId: (id: string | null) => void
   setProjectWizardOpen: (open: boolean) => void
   setSettingsOpen: (open: boolean) => void
 }
@@ -65,6 +78,7 @@ export const useUIStore = create<UIState>()(
       bottomPanelVisible: false,
       bottomPanelHeight: 200,
       theme: 'dark',
+      tabs: [],
       activeTabId: null,
       isProjectWizardOpen: false,
       isSettingsOpen: false,
@@ -96,11 +110,102 @@ export const useUIStore = create<UIState>()(
       setLeftSidebarAutoCollapsed: (collapsed): void => {
         set({ leftSidebarAutoCollapsed: collapsed })
       },
-      setTheme: (theme): void => {
-        set({ theme })
+      addTab: (tab): void => {
+        set((s) => {
+          const id = tab.id || Math.random().toString(36).substring(7)
+          const newTab = {
+            id,
+            type: 'chat',
+            title: 'New Chat',
+            ...tab
+          } as TabMetadata
+
+          // Don't add if already exists (by ID)
+          if (s.tabs.find((t) => t.id === id)) {
+            return { activeTabId: id }
+          }
+
+          return {
+            tabs: [...s.tabs, newTab],
+            activeTabId: id
+          }
+        })
+      },
+      closeTab: (id): void => {
+        set((s) => {
+          const newTabs = s.tabs.filter((t) => t.id !== id)
+          let newActiveTabId = s.activeTabId
+
+          if (s.activeTabId === id) {
+            newActiveTabId = newTabs.length > 0 ? newTabs[newTabs.length - 1].id : null
+          }
+
+          return {
+            tabs: newTabs,
+            activeTabId: newActiveTabId
+          }
+        })
       },
       setActiveTabId: (id): void => {
         set({ activeTabId: id })
+      },
+      reorderTabs: (startIndex, endIndex): void => {
+        set((s) => {
+          const newTabs = Array.from(s.tabs)
+          const [removed] = newTabs.splice(startIndex, 1)
+          newTabs.splice(endIndex, 0, removed)
+          return { tabs: newTabs }
+        })
+      },
+      updateTab: (id, updates): void => {
+        set((s) => ({
+          tabs: s.tabs.map((t) => (t.id === id ? { ...t, ...updates } : t))
+        }))
+      },
+      closeOtherTabs: (id): void => {
+        set((s) => {
+          const newTabs = s.tabs.filter((t) => t.id === id || t.pinned)
+          return {
+            tabs: newTabs,
+            activeTabId: id
+          }
+        })
+      },
+      closeTabsToTheRight: (id): void => {
+        set((s) => {
+          const index = s.tabs.findIndex((t) => t.id === id)
+          if (index === -1) return {}
+          const newTabs = s.tabs.filter((t, i) => i <= index || t.pinned)
+          return {
+            tabs: newTabs,
+            activeTabId: id
+          }
+        })
+      },
+      closeAllTabs: (): void => {
+        set((s) => ({
+          tabs: s.tabs.filter((t) => t.pinned),
+          activeTabId: s.tabs.find((t) => t.pinned)?.id || null
+        }))
+      },
+      nextTab: (): void => {
+        set((s) => {
+          if (s.tabs.length <= 1) return {}
+          const currentIndex = s.tabs.findIndex((t) => t.id === s.activeTabId)
+          const nextIndex = (currentIndex + 1) % s.tabs.length
+          return { activeTabId: s.tabs[nextIndex].id }
+        })
+      },
+      prevTab: (): void => {
+        set((s) => {
+          if (s.tabs.length <= 1) return {}
+          const currentIndex = s.tabs.findIndex((t) => t.id === s.activeTabId)
+          const prevIndex = (currentIndex - 1 + s.tabs.length) % s.tabs.length
+          return { activeTabId: s.tabs[prevIndex].id }
+        })
+      },
+      setTheme: (theme): void => {
+        set({ theme })
       },
       setProjectWizardOpen: (open): void => {
         set({ isProjectWizardOpen: open })
@@ -119,7 +224,9 @@ export const useUIStore = create<UIState>()(
         rightSidebarWidth: state.rightSidebarWidth,
         bottomPanelVisible: state.bottomPanelVisible,
         bottomPanelHeight: state.bottomPanelHeight,
-        theme: state.theme
+        theme: state.theme,
+        tabs: state.tabs,
+        activeTabId: state.activeTabId
         // Note: rightSidebarAutoCollapsed and leftSidebarAutoCollapsed are NOT persisted.
         // They reset to false on each app launch.
       })
