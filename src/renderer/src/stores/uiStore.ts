@@ -4,12 +4,21 @@ import { persist } from 'zustand/middleware'
 export type SidebarView = 'sessions' | 'projects' | 'tools' | 'marketplace' | 'settings' | null
 
 export interface UIState {
-  // Sidebar
+  // Sidebar visibility (manual toggle from activity bar / Ctrl+B)
   leftSidebarVisible: boolean
   leftSidebarView: SidebarView
   leftSidebarWidth: number
+
+  // Right sidebar
   rightSidebarVisible: boolean
   rightSidebarWidth: number
+
+  // Auto-collapsed state (driven by panel drag behavior, NOT manual toggle).
+  // When true, the panel slides off-screen but visibility flag is unchanged.
+  rightSidebarAutoCollapsed: boolean
+  leftSidebarAutoCollapsed: boolean
+
+  // Bottom panel
   bottomPanelVisible: boolean
   bottomPanelHeight: number
 
@@ -23,7 +32,7 @@ export interface UIState {
   isProjectWizardOpen: boolean
   isSettingsOpen: boolean
 
-  // Actions
+  // Manual toggle actions
   toggleLeftSidebar: () => void
   setLeftSidebarView: (view: SidebarView) => void
   setLeftSidebarWidth: (width: number) => void
@@ -31,6 +40,12 @@ export interface UIState {
   setRightSidebarWidth: (width: number) => void
   toggleBottomPanel: () => void
   setBottomPanelHeight: (height: number) => void
+
+  // Auto-collapse actions (for the new panel system)
+  setRightSidebarAutoCollapsed: (collapsed: boolean) => void
+  setLeftSidebarAutoCollapsed: (collapsed: boolean) => void
+
+  // Misc
   setTheme: (theme: 'dark' | 'light') => void
   setActiveTabId: (id: string | null) => void
   setProjectWizardOpen: (open: boolean) => void
@@ -45,6 +60,8 @@ export const useUIStore = create<UIState>()(
       leftSidebarWidth: 260,
       rightSidebarVisible: true,
       rightSidebarWidth: 320,
+      rightSidebarAutoCollapsed: false,
+      leftSidebarAutoCollapsed: false,
       bottomPanelVisible: false,
       bottomPanelHeight: 200,
       theme: 'dark',
@@ -52,17 +69,45 @@ export const useUIStore = create<UIState>()(
       isProjectWizardOpen: false,
       isSettingsOpen: false,
 
-      toggleLeftSidebar: () => set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible })),
-      setLeftSidebarView: (view) => set({ leftSidebarView: view }),
-      setLeftSidebarWidth: (width) => set({ leftSidebarWidth: width }),
-      toggleRightSidebar: () => set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible })),
-      setRightSidebarWidth: (width) => set({ rightSidebarWidth: width }),
-      toggleBottomPanel: () => set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible })),
-      setBottomPanelHeight: (height) => set({ bottomPanelHeight: height }),
-      setTheme: (theme) => set({ theme }),
-      setActiveTabId: (id) => set({ activeTabId: id }),
-      setProjectWizardOpen: (open) => set({ isProjectWizardOpen: open }),
-      setSettingsOpen: (open) => set({ isSettingsOpen: open })
+      toggleLeftSidebar: (): void => {
+        set((s) => ({ leftSidebarVisible: !s.leftSidebarVisible }))
+      },
+      setLeftSidebarView: (view): void => {
+        set({ leftSidebarView: view })
+      },
+      setLeftSidebarWidth: (width): void => {
+        set({ leftSidebarWidth: width })
+      },
+      toggleRightSidebar: (): void => {
+        set((s) => ({ rightSidebarVisible: !s.rightSidebarVisible }))
+      },
+      setRightSidebarWidth: (width): void => {
+        set({ rightSidebarWidth: width })
+      },
+      toggleBottomPanel: (): void => {
+        set((s) => ({ bottomPanelVisible: !s.bottomPanelVisible }))
+      },
+      setBottomPanelHeight: (height): void => {
+        set({ bottomPanelHeight: height })
+      },
+      setRightSidebarAutoCollapsed: (collapsed): void => {
+        set({ rightSidebarAutoCollapsed: collapsed })
+      },
+      setLeftSidebarAutoCollapsed: (collapsed): void => {
+        set({ leftSidebarAutoCollapsed: collapsed })
+      },
+      setTheme: (theme): void => {
+        set({ theme })
+      },
+      setActiveTabId: (id): void => {
+        set({ activeTabId: id })
+      },
+      setProjectWizardOpen: (open): void => {
+        set({ isProjectWizardOpen: open })
+      },
+      setSettingsOpen: (open): void => {
+        set({ isSettingsOpen: open })
+      }
     }),
     {
       name: 'ui-store',
@@ -75,6 +120,8 @@ export const useUIStore = create<UIState>()(
         bottomPanelVisible: state.bottomPanelVisible,
         bottomPanelHeight: state.bottomPanelHeight,
         theme: state.theme
+        // Note: rightSidebarAutoCollapsed and leftSidebarAutoCollapsed are NOT persisted.
+        // They reset to false on each app launch.
       })
     }
   )
