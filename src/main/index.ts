@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { createMainWindow, focusMainWindow } from './window'
 import { registerWindowHandlers, attachWindowStateEvents } from './ipcHandlers'
@@ -35,6 +35,11 @@ if (!gotTheLock) {
       console.info('Database and IPC handlers initialized')
     } catch (error) {
       console.error('Failed to initialize:', error)
+      const message = error instanceof Error ? error.message : String(error)
+      dialog.showErrorBox(
+        'Database Initialization Error',
+        `Failed to initialize the database: ${message}\n\nSome features may not work correctly.`
+      )
     }
 
     app.on('browser-window-created', (_, window) => {

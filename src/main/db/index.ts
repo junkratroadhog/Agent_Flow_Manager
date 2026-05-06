@@ -40,10 +40,12 @@ export function initDatabase(): Database.Database {
   let schema: string
 
   if (existsSync(schemaPath)) {
+    console.info(`Loading schema from ${schemaPath}`)
     schema = readFileSync(schemaPath, 'utf-8')
   } else {
     // Fallback for dev mode - read from src
     const devSchemaPath = join(process.cwd(), 'src/main/db/schema.sql')
+    console.info(`Schema not found in resources, trying dev path: ${devSchemaPath}`)
     schema = readFileSync(devSchemaPath, 'utf-8')
   }
 

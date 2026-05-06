@@ -28,7 +28,8 @@ export default function NewProjectDialog({
   const [submitting, setSubmitting] = useState(false)
   const { addProject, setActiveProject } = useProjectStore()
 
-  const handleSubmit = async (): Promise<void> => {
+  const handleSubmit = async (e?: React.FormEvent): Promise<void> => {
+    e?.preventDefault()
     if (!name.trim() || submitting) return
     setSubmitting(true)
     try {
